@@ -2,6 +2,7 @@
 
 \* ******************************************************************************** */
 #pragma once
+#include "stdafx.h"
 
 #include <QtWidgets/QDialog>
 #include <QtWidgets/QDialogButtonBox>

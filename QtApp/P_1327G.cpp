@@ -1,14 +1,6 @@
 module;
 
-#include <string>
-#include <array>
-#include <vector>
-
-#include <charconv>
-#include <ranges>
-#include <string_view>
-
-#include <regex>
+#include "stdafx.h"
 
 module P_1327G;
 

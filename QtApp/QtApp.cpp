@@ -2,14 +2,16 @@
 
 \* ******************************************************************************** */
 
+#include "stdafx.h"
+
 #include <QThread>
 #include <QFuture>
 #include <QtConcurrent/QtConcurrentRun.h>
 
 #include <QtCore/QVariant>
 
-#include "SettingsDialog.h"
 #include "QtApp.h"
+#include "SettingsDialog.h"
 
 //#define GET_VARIABLE_NAME(Variable) (#Variable)
 

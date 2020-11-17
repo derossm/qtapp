@@ -2,6 +2,8 @@
 
 \* ******************************************************************************** */
 
+#include "stdafx.h"
+
 #include "SettingsDialog.h"
 
 void SettingsDialog::setupUi()

@@ -1,8 +1,6 @@
 module;
 
-#include <vector>
-#include <string>
-#include <string_view>
+#include "stdafx.h"
 
 export module P_1327G;
 
@@ -15,7 +13,7 @@ export{
 	/**/
 		size_t num;
 
-		std::string entry;						// up to length 400,000
+		std::string entry;							// up to length 400,000
 		std::vector<std::string> substrings;		// break entry into up to 15 substrings for non-wildcard parsing
 		std::vector<std::string> patterns;
 		std::vector<std::pair<size_t, size_t>> mask;
