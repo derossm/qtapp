@@ -37,7 +37,7 @@ namespace ns
 	{
 		populatePatterns();
 
-		auto first{entry.find('?')};
+		//auto first{entry.find('?')};
 		if (size_t i{entry.find('?')}; i != std::string::npos)
 		{
 			if (i > 0)

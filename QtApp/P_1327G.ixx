@@ -6,11 +6,19 @@ export module P_1327G;
 
 //import std.core;
 
-namespace ns{
-export{
+/* ******************************************************************************** *\
+	solution to problem 1327G on website TODO link
+\* ******************************************************************************** */
+
+// NOTE - had to break up into .cpp the implementation details to get some future C++20 module related things to compile with old Qt library code
+// otherwise errors prevent compilation -- can't use import std.* either, because Qt uses #include versions of same code and causes a lot of errors
+
+namespace ns
+{
+export
+{
 	class Problem_1327G
 	{
-	/**/
 		size_t num;
 
 		std::string entry;							// up to length 400,000
@@ -33,7 +41,6 @@ export{
 		size_t patternMatchWildcards(std::string_view pattern) const noexcept;
 
 		bool patternMatchRegex() const noexcept;
-	/*********************************************************************************/
 	};
-}
-}
+} // export
+} // namespace

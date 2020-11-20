@@ -48,8 +48,9 @@ void QtApp::LoadFile(QFile& file)
 	auto tab{new QWidget()};
 	tab->setWindowFilePath(currentFile);
 
-	auto textEdit{new QTextBrowser()};
+	auto textEdit{new QTextEdit()};
 
+	// THROWING EXCEPTIONS wil::ResultException TODO ... fix? Note: isn't specific to in.readAll()
 	textEdit->setPlainText(in.readAll());
 
 	QFontMetrics metrics(QApplication::font());
@@ -72,6 +73,7 @@ void QtApp::SaveDialog()
 
 void QtApp::on_tabWidget_tabCloseRequested(int index)
 {
+	// TODO check if Qt already handles memory of child pointers, for now delete everything we new'd
 	auto tab{ui->tabWidget->widget(index)};
 	auto layout{tab->layout()};
 	auto widget{layout->itemAt(0)};

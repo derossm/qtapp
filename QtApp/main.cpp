@@ -53,7 +53,7 @@ namespace UI
 //ENTRY:mainCRTStartup
 int main(int argc, char* argv[])
 {
-	//ns::Problem_1327G obj;
+	ns::Problem_1327G obj;
 	QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 	QApplication app(argc, argv);
 
