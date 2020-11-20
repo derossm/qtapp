@@ -168,7 +168,6 @@ namespace ns
 				()};
 
 				const size_t size{len + pos - start}; // size either len + pos - xpos or 2*len - 1
-				//const auto str{entry.substr(start, size)}; // get the actual size, avoid manual checking r-side bound
 
 				if (const auto str{entry.substr(start, size)}; str.length() >= len)
 				{

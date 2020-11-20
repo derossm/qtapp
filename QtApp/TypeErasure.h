@@ -1,6 +1,7 @@
 #pragma once
 #include "stdafx.h"
 
+// saw this on a cppcon talk on type erasure
 struct TypeErasedNumberRef
 {
 	template<class Number> TypeErasedNumberRef(Number& n) :

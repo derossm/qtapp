@@ -27,10 +27,12 @@ void QtApp::LoadFile(QFile& file)
 {
 	//currentFile = QString(QDir::toNativeSeparators(file.fileName()));
 	currentFile = file.fileName();
-	QString name;
 
 	//auto tokens = currentFile.split(QDir::separator());
 	const auto tokens{currentFile.split('/')};
+
+	QString name;
+	// TODO make a lambda to initialize name instead of conditional assignment
 	if (tokens.length())
 	{
 		name = tokens.at(tokens.length() - 1);
@@ -42,11 +44,11 @@ void QtApp::LoadFile(QFile& file)
 
 	QTextStream in(&file);
 
+	// TODO move tab setup to a new function
 	auto tab{new QWidget()};
 	tab->setWindowFilePath(currentFile);
 
 	auto textEdit{new QTextBrowser()};
-	//textEdit->setDocument(new QTextDocument(in.readAll(), textEdit));
 
 	textEdit->setPlainText(in.readAll());
 
@@ -524,6 +526,4 @@ void QtApp::on_actionSettings_triggered()
 
 void QtApp::on_actionRoll_triggered()
 {
-	//Random obj;
-	//obj.roll(4, 6);
 }

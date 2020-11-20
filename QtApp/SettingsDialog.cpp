@@ -24,7 +24,7 @@ void SettingsDialog::setupUi()
 
 	connect(buttonBox, &QDialogButtonBox::accepted, this, &SettingsDialog::accept);
 	connect(buttonBox, &QDialogButtonBox::accepted, _parent, &QtApp::UpdateStyle);
-	//QObject::connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+
 	QObject::connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 
 	QMetaObject::connectSlotsByName(this);
@@ -37,7 +37,6 @@ void SettingsDialog::retranslateUi()
 
 void SettingsDialog::setColor()
 {
-	//const QColorDialog::ColorDialogOptions options = QFlag(colorDialogOptionsWidget->value());
 	QCoreApplication::setOrganizationName("WastedLessons");
 	QCoreApplication::setApplicationName("WTF");
 
@@ -58,36 +57,21 @@ void SettingsDialog::setColor()
 	{
 		settings->setValue("Style/Window", color);
 		settings->sync();
-		//colorLabel->setText(color.name());
-		//colorLabel->setPalette(QPalette(color));
-		//colorLabel->setAutoFillBackground(true);
 	}
 }
 
 void SettingsDialog::setupColor()
 {
-	//auto frameStyle = QFrame::Sunken | QFrame::Panel;
-
-	//auto page = new QWidget;
-	//auto colorLabel = new QLabel;
-	//colorLabel->setFrameStyle(frameStyle);
-	colorButton = new QPushButton(tr("QColorDialog::get&Color()"));
+	colorButton = new QPushButton(tr("Setup Color"));
 
 	auto layout = new QGridLayout(this);
+
 	layout->setColumnStretch(1, 1);
 	layout->addWidget(colorButton, 0, 0);
-	//layout->addWidget(colorLabel, 0, 1);
+
 	connect(colorButton, &QAbstractButton::clicked, this, &SettingsDialog::setColor);
+
 	QMetaObject::connectSlotsByName(this);
-
-	//auto colorDialogOptionsWidget = new DialogOptionsWidget;
-	//colorDialogOptionsWidget->addCheckBox(doNotUseNativeDialog, QColorDialog::DontUseNativeDialog);
-	//colorDialogOptionsWidget->addCheckBox(tr("Show alpha channel") , QColorDialog::ShowAlphaChannel);
-	//colorDialogOptionsWidget->addCheckBox(tr("No buttons") , QColorDialog::NoButtons);
-	//layout->addItem(new QSpacerItem(0, 0, QSizePolicy::Ignored, QSizePolicy::MinimumExpanding), 1, 0);
-	//layout->addWidget(colorDialogOptionsWidget, 2, 0, 1 ,2);
-
-	//toolbox->addItem(page, tr("Color Dialog"));
 }
 
 void SettingsDialog::accept()
