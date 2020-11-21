@@ -40,23 +40,24 @@ void SettingsDialog::setColor()
 	QCoreApplication::setOrganizationName("WastedLessons");
 	QCoreApplication::setApplicationName("WTF");
 
-	auto settings = std::make_unique<QSettings>(QSettings::IniFormat, QSettings::UserScope, QCoreApplication::organizationName(), QCoreApplication::applicationName());
+	//auto settings = std::make_unique<QSettings>(QSettings::IniFormat, QSettings::UserScope, QCoreApplication::organizationName(), QCoreApplication::applicationName());
+	QSettings settings(QSettings::IniFormat, QSettings::UserScope, QCoreApplication::organizationName(), QCoreApplication::applicationName());
 
-	if (settings->status() != QSettings::NoError)
+	if (settings.status() != QSettings::NoError)
 	{
-		QMessageBox::warning(this, tr("Error"), tr("[Error] Loading Settings; Status Code: {%1}").arg(settings->status()));
+		QMessageBox::warning(this, tr("Error"), tr("[Error] Loading Settings; Status Code: {%1}").arg(settings.status()));
 	}
-	else if (!settings->isWritable())
+	else if (!settings.isWritable())
 	{
-		QMessageBox::warning(this, tr("Warning"), tr("[Warning] Loading Settings; Location Non-writable: {%1}").arg(settings->fileName()));
+		QMessageBox::warning(this, tr("Warning"), tr("[Warning] Loading Settings; Location Non-writable: {%1}").arg(settings.fileName()));
 	}
 
-	const auto color = QColorDialog::getColor(settings->value("Style/Window", QColor(Qt::green)).value<QColor>(), this, "Select Color", QColorDialog::ShowAlphaChannel);
+	const auto color = QColorDialog::getColor(settings.value("Style/Window", QColor(Qt::green)).value<QColor>(), this, "Select Color", QColorDialog::ShowAlphaChannel);
 
 	if (color.isValid())
 	{
-		settings->setValue("Style/Window", color);
-		settings->sync();
+		settings.setValue("Style/Window", color);
+		settings.sync();
 	}
 }
 

@@ -63,5 +63,14 @@
     <ClInclude Include="stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="P_1327G_v2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="P_1442E.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="P_1446E.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

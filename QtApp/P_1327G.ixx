@@ -7,7 +7,8 @@ export module P_1327G;
 //import std.core;
 
 /* ******************************************************************************** *\
-	solution to problem 1327G on website TODO link
+	solution to https://codeforces.com/problemset/problem/1327/G
+
 \* ******************************************************************************** */
 
 // NOTE - had to break up into .cpp the implementation details to get some future C++20 module related things to compile with old Qt library code

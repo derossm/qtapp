@@ -146,6 +146,9 @@
     <QtUic Include="QtApp.ui" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="P_1327G_v2.h" />
+    <ClInclude Include="P_1442E.h" />
+    <ClInclude Include="P_1446E.h" />
     <ClInclude Include="SettingsDialog.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="TypeErasure.h" />

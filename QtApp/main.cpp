@@ -9,6 +9,8 @@
 
 #include "QtApp.h"
 #include "TypeErasure.h"
+#include "P_1442E.h"
+#include "P_1446E.h"
 
 import P_1327G;
 
@@ -53,7 +55,10 @@ namespace UI
 //ENTRY:mainCRTStartup
 int main(int argc, char* argv[])
 {
-	ns::Problem_1327G obj;
+	Problem_1446E obj1446e;
+	Problem_1442E<int,int> obj1442e;
+	ns::Problem_1327G obj1327g;
+
 	QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 	QApplication app(argc, argv);
 
