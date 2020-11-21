@@ -1,3 +1,8 @@
+/* ******************************************************************************** *\
+	This is the main Qt module.
+
+	Note: following Qt style for Qt interfacing code
+\* ******************************************************************************** */
 #pragma once
 
 #include "stdafx.h"
@@ -7,6 +12,7 @@
 #include <QtWidgets/QMainWindow>
 
 #include "uic/ui_QtApp.h"
+
 
 class SettingsDialog;
 
@@ -37,11 +43,20 @@ private:
 	void SetupStyle();
 	void GenerateDefaultSettings();
 
+	// do not copy
+	QtApp(const QtApp&) = delete;
+	QtApp& operator=(const QtApp&) = delete;
+
+	// do not move
+	QtApp(QtApp&&) = delete;
+	QtApp& operator=(QtApp&&) = delete;
+
 public:
-	QtApp(QWidget* parent = nullptr);
+	QtApp(QWidget* parent = (QWidget*)nullptr); // parent default casted this way in Qt
 	~QtApp();
 
 public slots:
+	// must be accessible by SettingsDialog to trigger updating the style
 	void UpdateStyle()
 	{
 		SetupStyle();

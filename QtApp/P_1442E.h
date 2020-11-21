@@ -3,7 +3,6 @@
 #include "stdafx.h"
 
 #include <map>
-#include <ranges>
 
 /* ******************************************************************************** *\
 	solution to https://codeforces.com/problemset/problem/1442/E

@@ -3,7 +3,6 @@
 #include "stdafx.h"
 
 #include <map>
-#include <ranges>
 #include <bitset>
 #include <functional>
 #include <concepts>

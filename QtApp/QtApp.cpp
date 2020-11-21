@@ -13,6 +13,7 @@
 #include "QtApp.h"
 #include "SettingsDialog.h"
 
+#include <functional>
 //#define GET_VARIABLE_NAME(Variable) (#Variable)
 
 void QtApp::on_actionNew_triggered()
@@ -25,44 +26,36 @@ void QtApp::on_actionNew_triggered()
 */
 void QtApp::LoadFile(QFile& file)
 {
-	//currentFile = QString(QDir::toNativeSeparators(file.fileName()));
 	currentFile = file.fileName();
 
-	//auto tokens = currentFile.split(QDir::separator());
 	const auto tokens{currentFile.split('/')};
 
-	QString name;
-	// TODO make a lambda to initialize name instead of conditional assignment
-	if (tokens.length())
-	{
-		name = tokens.at(tokens.length() - 1);
-	}
-	else
-	{
-		name = tr("New File");
-	}
+	const auto name{[&](){ return tokens.length() ? tokens.at(tokens.length()-1) : tr("New File"); }()}; //initialize local with immediate lambda call
 
 	QTextStream in(&file);
 
 	// TODO move tab setup to a new function
-	auto tab{new QWidget()};
-	tab->setWindowFilePath(currentFile);
-
 	auto textEdit{new QTextEdit()};
 
-	// THROWING EXCEPTIONS wil::ResultException TODO ... fix? Note: isn't specific to in.readAll()
-	textEdit->setPlainText(in.readAll());
+	if (in.status() == QTextStream::Status::Ok)
+	{
+		textEdit->setPlainText(in.readAll());
+		// should we check if in.readAll() succeeds? how does setPlainText handle failure TODO
+	}
 
+	// setup tabs for text alignment, default is atrocious
 	QFontMetrics metrics(QApplication::font());
 	textEdit->setTabStopDistance((qreal)4.0 * (qreal)metrics.horizontalAdvance(' '));
 
 	auto mainLayout{new QVBoxLayout()};
 	mainLayout->addWidget(textEdit);
 
+	auto tab{new QWidget()};
+	tab->setWindowFilePath(currentFile);
 	tab->setLayout(mainLayout);
 
 	ui->tabWidget->insertTab(0, tab, name);
-	ui->tabWidget->setCurrentIndex(0);
+	ui->tabWidget->setCurrentIndex(0); // update view to display the new tab
 
 	UpdateRecentFiles();
 }
@@ -92,18 +85,18 @@ void QtApp::on_tabWidget_tabCloseRequested(int index)
 auto QtApp::GetRecentFiles() const
 {
 	QStringList files;
+
 	settings->beginGroup("RecentFiles");
-	for (auto& val : settings->childKeys())
-	{
-		files.push_back(settings->value(val).value<QString>());
-	}
+	std::ranges::for_each(settings->childKeys(), [&](auto&& key){ files.push_back(settings->value(key).value<QString>()); });
 	settings->endGroup();
 
+	// TODO confirm RVO is happening
 	return files;
 }
 
 void QtApp::ConnectRecent(QStringList& files)
 {
+	// more work to check recent are valid still, just reset connected actions TODO think about
 	while (recentFileActions.size() > 0)
 	{
 		QObject::disconnect(recentFileActions.back().get());
@@ -157,16 +150,14 @@ void QtApp::UpdateRecentFiles()
 		}
 
 		settings->beginGroup("RecentFiles");
-		for (auto& key : settings->childKeys())
-		{
-			settings->remove(key);
-		}
+		std::ranges::for_each(settings->childKeys(), [&](auto&& key){ settings->remove(key); });
 		settings->endGroup();
-		settings->sync();
 
-		//for (auto& v : files) // need a counter, might as well use normal for loop
-		const auto size{files.size()};
-		for (auto i{0}; i < size; ++i)
+		SaveSettings();
+
+		//for (auto&& v : files) // need a counter, might as well use normal for loop
+		//const auto size{files.size()};
+		for (qsizetype i{0}, size{files.size()}; i < size; ++i)
 		{
 			settings->setValue(tr("RecentFiles/recent%1").arg(i), files.at(i));
 		}
@@ -199,7 +190,6 @@ void QtApp::LoadSettings()
 		// backup the settings file in a new thread
 		QFuture<void> back = QtConcurrent::run([&]()
 		{
-			//auto fileName = QString(QDir::toNativeSeparators(settings->fileName()));
 			auto fileName{settings->fileName()};
 			if (fileName.isEmpty())
 			{
@@ -214,7 +204,7 @@ void QtApp::LoadSettings()
 				// I don't know if truncate checks for bounds, and might as well skip a search if out of bounds
 				if (pos <= fileName.size() - 1)
 				{
-					//if (fileName.lastIndexOf(QDir::separator()) < pos)
+					// ensure the directory name isn't altered
 					if (fileName.lastIndexOf('/') < pos)
 					{
 						fileName.truncate(pos + 1);
@@ -223,10 +213,20 @@ void QtApp::LoadSettings()
 			}
 			fileName = tr("%1backup.ini").arg(fileName);
 
+			auto backup{std::make_unique<QSettings>(QSettings::IniFormat, QSettings::UserScope, QCoreApplication::organizationName(), tr("%1.backup").arg(QCoreApplication::applicationName()))};
+
+			std::ranges::for_each(settings->allKeys(), [&](auto&& key){ backup->setValue(key, settings->value(key)); });
+
+			// temporarily enable ntfs permission lookup
+			extern Q_CORE_EXPORT int qt_ntfs_permission_lookup;
+			qt_ntfs_permission_lookup++;
+
 			QFile file(fileName);
 			if (file.exists())
 			{
-				if (!file.isWritable())
+				// make sure existing backup file permissions allow write
+				//if (!(file.permissions() & QFileDevice::WriteUser))
+				if (!(std::bit_and<QFileDevice::Permissions>()(file.permissions(), QFileDevice::WriteUser)))
 				{
 					if (!file.remove())
 					{
@@ -235,22 +235,29 @@ void QtApp::LoadSettings()
 					}
 				}
 			}
+			qt_ntfs_permission_lookup--;
 
-			auto backup{std::make_unique<QSettings>(QSettings::IniFormat, QSettings::UserScope, QCoreApplication::organizationName(), tr("%1.backup").arg(QCoreApplication::applicationName()))};
-			for (auto& key : settings->allKeys())
-			{
-				backup->setValue(key, settings->value(key));
-			}
 			backup->sync();
 		}); // End QFuture
 	}
 
-	settings->sync();
+	//settings->sync();
 }
 
 void QtApp::SaveSettings()
 {
-	settings->sync();
+	if (settings->status() != QSettings::NoError)
+	{
+		QMessageBox::warning(this, tr("Error"), tr("[Error] Saving Settings; Status Code: {%1}").arg(settings->status()));
+	}
+	else if (!settings->isWritable())
+	{
+		QMessageBox::warning(this, tr("Warning"), tr("[Warning] Saving Settings; Location Non-writable: {%1}").arg(settings->fileName()));
+	}
+	else
+	{
+		settings->sync();
+	}
 }
 
 void QtApp::GenerateDefaultSettings()

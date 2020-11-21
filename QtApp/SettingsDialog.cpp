@@ -1,5 +1,5 @@
 /* ******************************************************************************** *\
-
+	This is horribly hacked together and needs completely redesigned. TODO
 \* ******************************************************************************** */
 
 #include "stdafx.h"
@@ -12,9 +12,9 @@ void SettingsDialog::setupUi()
 	{
 		this->setObjectName(QString::fromUtf8("settingsUI"));
 	}
-
 	this->resize(1134, 610);
-	buttonBox = new QDialogButtonBox(this);
+
+	auto buttonBox{new QDialogButtonBox(this)};
 	buttonBox->setObjectName(QString::fromUtf8("buttonBox"));
 	buttonBox->setGeometry(QRect(30, 240, 341, 32));
 	buttonBox->setOrientation(Qt::Horizontal);
@@ -23,7 +23,7 @@ void SettingsDialog::setupUi()
 	retranslateUi();
 
 	connect(buttonBox, &QDialogButtonBox::accepted, this, &SettingsDialog::accept);
-	connect(buttonBox, &QDialogButtonBox::accepted, _parent, &QtApp::UpdateStyle);
+	//connect(buttonBox, &QDialogButtonBox::accepted, _parent, &QtApp::UpdateStyle);
 
 	QObject::connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 
@@ -32,41 +32,32 @@ void SettingsDialog::setupUi()
 
 void SettingsDialog::retranslateUi()
 {
-	this->setWindowTitle(QCoreApplication::translate("Settings", "Dialog", nullptr));
+	this->setWindowTitle(QCoreApplication::translate("Settings", "Dialog"));
 }
 
 void SettingsDialog::setColor()
 {
-	QCoreApplication::setOrganizationName("WastedLessons");
-	QCoreApplication::setApplicationName("WTF");
+	//QSettings settings(QSettings::IniFormat, QSettings::UserScope, QCoreApplication::organizationName(), QCoreApplication::applicationName());
+	settings = std::make_unique<QSettings>(QSettings::IniFormat, QSettings::UserScope, QCoreApplication::organizationName(), QCoreApplication::applicationName());
 
-	//auto settings = std::make_unique<QSettings>(QSettings::IniFormat, QSettings::UserScope, QCoreApplication::organizationName(), QCoreApplication::applicationName());
-	QSettings settings(QSettings::IniFormat, QSettings::UserScope, QCoreApplication::organizationName(), QCoreApplication::applicationName());
-
-	if (settings.status() != QSettings::NoError)
+	if (settings->status() != QSettings::NoError)
 	{
-		QMessageBox::warning(this, tr("Error"), tr("[Error] Loading Settings; Status Code: {%1}").arg(settings.status()));
+		QMessageBox::warning(this, tr("Error"), tr("[Error] Loading Settings; Status Code: {%1}").arg(settings->status()));
 	}
-	else if (!settings.isWritable())
+	else if (!settings->isWritable())
 	{
-		QMessageBox::warning(this, tr("Warning"), tr("[Warning] Loading Settings; Location Non-writable: {%1}").arg(settings.fileName()));
+		QMessageBox::warning(this, tr("Warning"), tr("[Warning] Loading Settings; Location Non-writable: {%1}").arg(settings->fileName()));
 	}
 
-	const auto color = QColorDialog::getColor(settings.value("Style/Window", QColor(Qt::green)).value<QColor>(), this, "Select Color", QColorDialog::ShowAlphaChannel);
+	color = QColorDialog::getColor(settings->value("Style/Window", QColor(Qt::green)).value<QColor>(), this, "Select Color", QColorDialog::ShowAlphaChannel);
 
-	if (color.isValid())
-	{
-		settings.setValue("Style/Window", color);
-		settings.sync();
-	}
 }
 
 void SettingsDialog::setupColor()
 {
-	colorButton = new QPushButton(tr("Setup Color"));
+	auto colorButton{new QPushButton(tr("Setup Color"))};
 
 	auto layout = new QGridLayout(this);
-
 	layout->setColumnStretch(1, 1);
 	layout->addWidget(colorButton, 0, 0);
 
@@ -77,5 +68,11 @@ void SettingsDialog::setupColor()
 
 void SettingsDialog::accept()
 {
+	if (color.isValid())
+	{
+		settings->setValue("Style/Window", color);
+		settings->sync();
+	}
+	_parent->UpdateStyle();
 	this->done(QDialog::Accepted);
 }

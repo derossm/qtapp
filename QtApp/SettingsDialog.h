@@ -11,9 +11,9 @@
 
 class SettingsDialog : public QDialog
 {
-	const QtApp* _parent;
-	QDialogButtonBox* buttonBox;
-	QPushButton* colorButton;
+	QtApp* _parent;
+	std::unique_ptr<QSettings> settings;
+	QColor color;
 
 	void setupUi();
 	void retranslateUi();
@@ -22,12 +22,12 @@ class SettingsDialog : public QDialog
 
 public:
 
-	SettingsDialog(const QtApp* p = nullptr) : _parent{p}
+	SettingsDialog(QtApp* p = nullptr) : _parent{p}
 	{
 		setupUi();
 		setupColor();
 	}
 
-public slots:
+private slots:
 	void accept();
 };
