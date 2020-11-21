@@ -50,7 +50,6 @@ void SettingsDialog::setColor()
 	}
 
 	color = QColorDialog::getColor(settings->value("Style/Window", QColor(Qt::green)).value<QColor>(), this, "Select Color", QColorDialog::ShowAlphaChannel);
-
 }
 
 void SettingsDialog::setupColor()

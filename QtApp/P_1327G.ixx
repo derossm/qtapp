@@ -26,6 +26,7 @@ export
 		std::vector<std::string> substrings;		// break entry into up to 15 substrings for non-wildcard parsing
 		std::vector<std::string> patterns;
 		std::vector<std::pair<size_t, size_t>> mask;
+		//std::map<size_t, size_t> mask;
 
 	public:
 		Problem_1327G() noexcept;

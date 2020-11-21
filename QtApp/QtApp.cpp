@@ -30,17 +30,18 @@ void QtApp::LoadFile(QFile& file)
 
 	const auto tokens{currentFile.split('/')};
 
-	const auto name{[&](){ return tokens.length() ? tokens.at(tokens.length()-1) : tr("New File"); }()}; //initialize local with immediate lambda call
-
-	QTextStream in(&file);
+	const auto name{[&]{ return tokens.length() ? tokens.at(tokens.length()-1) : tr("New File"); }()}; //initialize local with immediate lambda call
 
 	// TODO move tab setup to a new function
 	auto textEdit{new QTextEdit()};
 
-	if (in.status() == QTextStream::Status::Ok)
 	{
-		textEdit->setPlainText(in.readAll());
-		// should we check if in.readAll() succeeds? how does setPlainText handle failure TODO
+		QTextStream in(&file);
+		if (in.status() == QTextStream::Status::Ok)
+		{
+			textEdit->setPlainText(in.readAll());
+			// should we check if in.readAll() succeeds? how does setPlainText handle failure TODO
+		}
 	}
 
 	// setup tabs for text alignment, default is atrocious
@@ -103,9 +104,11 @@ void QtApp::ConnectRecent(QStringList& files)
 		recentFileActions.pop_back();
 	}
 
+	//std::ranges::transform(recentFileActions, );
+
 	recentFileActions.reserve(files.size());
 
-	for (auto&& val : files)
+	for (auto& val : files)
 	{
 		auto recentFileAction{std::make_unique<QAction>(this)};
 
@@ -116,7 +119,7 @@ void QtApp::ConnectRecent(QStringList& files)
 		QObject::connect(recentFileAction.get(), &QAction::triggered, this, &QtApp::OpenRecent);
 		ui->menuOpen_Recent->addAction(recentFileAction.get());
 
-		recentFileActions.emplace_back(std::move(recentFileAction));
+		recentFileActions.push_back(std::move(recentFileAction));
 	}
 
 	recentFileActions.shrink_to_fit();
@@ -188,7 +191,7 @@ void QtApp::LoadSettings()
 	else
 	{
 		// backup the settings file in a new thread
-		QFuture<void> back = QtConcurrent::run([&]()
+		QFuture<void> back = QtConcurrent::run([&]
 		{
 			auto fileName{settings->fileName()};
 			if (fileName.isEmpty())
@@ -213,10 +216,6 @@ void QtApp::LoadSettings()
 			}
 			fileName = tr("%1backup.ini").arg(fileName);
 
-			auto backup{std::make_unique<QSettings>(QSettings::IniFormat, QSettings::UserScope, QCoreApplication::organizationName(), tr("%1.backup").arg(QCoreApplication::applicationName()))};
-
-			std::ranges::for_each(settings->allKeys(), [&](auto&& key){ backup->setValue(key, settings->value(key)); });
-
 			// temporarily enable ntfs permission lookup
 			extern Q_CORE_EXPORT int qt_ntfs_permission_lookup;
 			qt_ntfs_permission_lookup++;
@@ -236,6 +235,10 @@ void QtApp::LoadSettings()
 				}
 			}
 			qt_ntfs_permission_lookup--;
+
+			auto backup{std::make_unique<QSettings>(QSettings::IniFormat, QSettings::UserScope, QCoreApplication::organizationName(), tr("%1.backup").arg(QCoreApplication::applicationName()))};
+
+			std::ranges::for_each(settings->allKeys(), [&](auto&& key){ backup->setValue(key, settings->value(key)); });
 
 			backup->sync();
 		}); // End QFuture

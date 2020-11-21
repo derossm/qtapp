@@ -23,6 +23,8 @@ namespace ns
 		num = num_;
 		entry = std::move(args.front());
 		args.erase(args.begin());
+		args.shrink_to_fit();
+
 		patterns.swap(args);
 	}
 
@@ -37,7 +39,6 @@ namespace ns
 	{
 		populatePatterns();
 
-		//auto first{entry.find('?')};
 		if (size_t i{entry.find('?')}; i != std::string::npos)
 		{
 			if (i > 0)
