@@ -1,13 +1,4 @@
-#pragma once
-
-#include "stdafx.h"
-
-#include <map>
-#include <bitset>
-#include <functional>
-#include <concepts>
-
-/* ******************************************************************************** *\
+/* ************************************************************************************************************************************************ *\
 	solution to https://codeforces.com/problemset/problem/1446/E
 
 	need coordinate struct (x, y) for cells
@@ -15,7 +6,11 @@
 	ideally create a bitset 2d array to quickly compare neighbors, but I only know
 	the manual way to do this atm; must research multimaps
 
-\* ******************************************************************************** */
+\* ************************************************************************************************************************************************ */
+
+#pragma once
+
+#include "stdafx.h"
 
 class BitMatrix
 {

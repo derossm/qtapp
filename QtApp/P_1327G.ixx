@@ -1,18 +1,16 @@
+/* ************************************************************************************************************************************************ *\
+	solution to https://codeforces.com/problemset/problem/1327/G
+
+	NOTE - had to break up into .cpp the implementation details to get some future C++20 module related things to compile with old Qt library code
+	otherwise errors prevent compilation -- can't use import std.* either, because Qt uses #include versions of same code and causes a lot of errors
+
+\* ************************************************************************************************************************************************ */
+
 module;
 
 #include "stdafx.h"
 
 export module P_1327G;
-
-//import std.core;
-
-/* ******************************************************************************** *\
-	solution to https://codeforces.com/problemset/problem/1327/G
-
-\* ******************************************************************************** */
-
-// NOTE - had to break up into .cpp the implementation details to get some future C++20 module related things to compile with old Qt library code
-// otherwise errors prevent compilation -- can't use import std.* either, because Qt uses #include versions of same code and causes a lot of errors
 
 namespace ns
 {
