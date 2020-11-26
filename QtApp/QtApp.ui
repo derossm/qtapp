@@ -128,7 +128,6 @@
      <string>Tools</string>
     </property>
     <addaction name="actionSettings"/>
-    <addaction name="actionRoll"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -270,11 +269,6 @@
   <action name="actionNew">
    <property name="text">
     <string>New</string>
-   </property>
-  </action>
-  <action name="actionRoll">
-   <property name="text">
-    <string>Roll</string>
    </property>
   </action>
  </widget>

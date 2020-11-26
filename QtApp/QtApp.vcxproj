@@ -65,9 +65,12 @@
     </QtMoc>
     <QtMoc>
       <EnableModules>true</EnableModules>
-      <PrecompiledHeader>Create</PrecompiledHeader>
-      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>
+      </PrecompiledHeaderOutputFile>
       <ForceInclude>stdafx.h;QtApp.h</ForceInclude>
     </QtMoc>
   </ItemDefinitionGroup>
@@ -86,9 +89,12 @@
     </QtMoc>
     <QtMoc>
       <EnableModules>true</EnableModules>
-      <PrecompiledHeader>Create</PrecompiledHeader>
-      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>
+      </PrecompiledHeaderOutputFile>
       <ForceInclude>stdafx.h; QtApp.h</ForceInclude>
     </QtMoc>
   </ItemDefinitionGroup>

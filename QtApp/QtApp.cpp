@@ -14,84 +14,31 @@
 
 //#define GET_VARIABLE_NAME(Variable) (#Variable)
 
-void QtApp::on_actionNew_triggered()
+// parent default casted this way in Qt
+QtApp::QtApp(QWidget* parent) : QMainWindow(parent), ui(std::make_unique<Ui::QtGuiApplicationClass>()), settingsDialog(std::make_unique<SettingsDialog>(this))
 {
+	ui->setupUi(this);
 
-}
-
-/*
-	Loading/Saving files
-*/
-void QtApp::LoadFile(QFile& file)
-{
-	currentFile = file.fileName();
-
-	const auto tokens{currentFile.split('/')};
-
-	const auto name{[&]{ return tokens.length() ? tokens.at(tokens.length()-1) : tr("New File"); }()}; //initialize local with immediate lambda call
-
-	// TODO move tab setup to a new function
-	auto textEdit{new QTextEdit()};
-
-	{
-		QTextStream in(&file);
-		if (in.status() == QTextStream::Status::Ok)
-		{
-			textEdit->setPlainText(in.readAll());
-			// should we check if in.readAll() succeeds? how does setPlainText handle failure TODO
-		}
-	}
-
-	// setup tabs for text alignment, default is atrocious
-	QFontMetrics metrics(QApplication::font());
-	textEdit->setTabStopDistance((qreal)4.0 * (qreal)metrics.horizontalAdvance(' '));
-
-	auto mainLayout{new QVBoxLayout()};
-	mainLayout->addWidget(textEdit);
-
-	auto tab{new QWidget()};
-	tab->setWindowFilePath(currentFile);
-	tab->setLayout(mainLayout);
-
-	ui->tabWidget->insertTab(0, tab, name);
-	ui->tabWidget->setCurrentIndex(0); // update view to display the new tab
+	LoadSettings();
+	SetupStyle();
 
 	UpdateRecentFiles();
 }
 
-void QtApp::SaveDialog()
+QtApp::~QtApp()
 {
+	SaveSettings();
+	SaveDialog();
 }
 
-void QtApp::on_tabWidget_tabCloseRequested(int index)
+void QtApp::on_actionSettings_triggered()
 {
-	// TODO check if Qt already handles memory of child pointers, for now delete everything we new'd
-	auto tab{ui->tabWidget->widget(index)};
-	auto layout{tab->layout()};
-	auto widget{layout->itemAt(0)};
-
-	layout->removeItem(widget);
-	ui->tabWidget->removeTab(index);
-
-	delete widget;
-	delete layout;
-	delete tab;
+	settingsDialog->show();
 }
 
 /* ******************************************************************************** *\
 	menu setup
 \* ******************************************************************************** */
-auto QtApp::GetRecentFiles() const
-{
-	QStringList files;
-
-	settings->beginGroup("RecentFiles");
-	std::ranges::for_each(settings->childKeys(), [&](auto&& key){ files.push_back(settings->value(key).value<QString>()); });
-	settings->endGroup();
-
-	// TODO confirm RVO is happening
-	return files;
-}
 
 void QtApp::ConnectRecent(QStringList& files)
 {
@@ -102,7 +49,14 @@ void QtApp::ConnectRecent(QStringList& files)
 		recentFileActions.pop_back();
 	}
 
-	//std::ranges::transform(recentFileActions, );
+	/*for (auto& iter : recentFileActions)
+	{
+		QObject::disconnect(iter.get());
+	}
+	recentFileActions.clear();*/
+
+	//std::ranges::for_each(recentFileActions, [&](auto& iter){ QObject::disconnect(iter.get()); });
+	//recentFileActions.clear();
 
 	recentFileActions.reserve(files.size());
 
@@ -165,6 +119,116 @@ void QtApp::UpdateRecentFiles()
 	}
 
 	ConnectRecent(files);
+}
+
+/*
+	Loading/Saving files
+*/
+void QtApp::LoadFile(QFile& file)
+{
+	currentFile = file.fileName();
+
+	const auto tokens{currentFile.split('/')};
+
+	const auto name{[&]{ return tokens.length() ? tokens.at(tokens.length()-1) : tr("New File"); }()}; //initialize local with immediate lambda call
+
+	// TODO move tab setup to a new function
+	auto textEdit{new QTextEdit()};
+
+	// scope for stream
+	{
+		QTextStream in(&file);
+		if (in.status() == QTextStream::Status::Ok)
+		{
+			textEdit->setPlainText(in.readAll());
+			// should we check if in.readAll() succeeds? how does setPlainText handle failure TODO
+		}
+	}
+
+	// setup tabs for text alignment, default is atrocious
+	QFontMetrics metrics(QApplication::font());
+	textEdit->setTabStopDistance((qreal)4.0 * (qreal)metrics.horizontalAdvance(' '));
+
+	auto mainLayout{new QVBoxLayout()};
+	mainLayout->addWidget(textEdit);
+
+	auto tab{new QWidget()};
+	tab->setWindowFilePath(currentFile);
+	tab->setLayout(mainLayout);
+
+	ui->tabWidget->insertTab(0, tab, name);
+	ui->tabWidget->setCurrentIndex(0); // update view to display the new tab
+
+	UpdateRecentFiles();
+}
+
+/* ******************************************************************************** *\
+	menu->file
+\* ******************************************************************************** */
+
+// sadly this can't be done in a new thread, because QtApp::LoadFile() has to be done in the QtGui thread
+void QtApp::OpenFile(QString fileName)
+{
+	if (fileName.isNull())
+	{
+		// user cancelled action during QFileDialog
+		return;
+	}
+
+	QFile file(fileName);
+
+	if (!file.exists())
+	{
+		// invalid filename, try to locate if the file was moved (or just open something else)
+		fileName = QFileDialog::getOpenFileName(this, tr("Locate File..."));
+
+		if (fileName.isNull())
+		{
+			// user cancelled action during QFileDialog
+			return;
+		}
+		else
+		{
+			file.setFileName(fileName);
+		}
+	}
+
+	if (!file.open(QIODevice::ReadOnly | QFile::Text))
+	{
+		// genuine error state
+		QMessageBox::warning(this, tr("Warning"), tr("Cannot open file [%1]:\n{%2}").arg(QDir::toNativeSeparators(fileName), file.errorString()));
+	}
+	else
+	{
+		LoadFile(file);
+	}
+
+	file.close();
+}
+
+void QtApp::OpenRecent()
+{
+	const auto action{qobject_cast<QAction*>(sender())};
+	if (!action)
+	{
+		// how did we get here?
+		return;
+	}
+
+	QString fileName;
+
+	if (!action->data().isNull())
+	{
+		fileName = action->data().toString();
+	}
+
+	if (fileName.isEmpty())
+	{
+		// missing filename in recent entry, try to recover with QFileDialog
+		fileName = QFileDialog::getOpenFileName(this, tr("Locate File..."));
+	}
+
+	OpenFile(std::move(fileName));
 }
 
 void QtApp::LoadSettings()
@@ -245,22 +309,6 @@ void QtApp::LoadSettings()
 	//settings->sync();
 }
 
-void QtApp::SaveSettings()
-{
-	if (settings->status() != QSettings::NoError)
-	{
-		QMessageBox::warning(this, tr("Error"), tr("[Error] Saving Settings; Status Code: {%1}").arg(settings->status()));
-	}
-	else if (!settings->isWritable())
-	{
-		QMessageBox::warning(this, tr("Warning"), tr("[Warning] Saving Settings; Location Non-writable: {%1}").arg(settings->fileName()));
-	}
-	else
-	{
-		settings->sync();
-	}
-}
-
 void QtApp::GenerateDefaultSettings()
 {
 	settings->clear();
@@ -328,212 +376,4 @@ void QtApp::SetupStyle()
 	palette.setColor(QPalette::Disabled, QPalette::HighlightedText, settings->value("Style/DisabledHighlightedText", QColor(127, 127, 127)).value<QColor>());	//QColor(127, 127, 127)
 
 	qApp->setPalette(palette);
-}
-
-/* ******************************************************************************** *\
-
-\* ******************************************************************************** */
-QtApp::QtApp(QWidget* parent) : QMainWindow(parent), ui(std::make_unique<Ui::QtGuiApplicationClass>()), settingsDialog(std::make_unique<SettingsDialog>(this))
-{
-	ui->setupUi(this);
-
-	LoadSettings();
-	SetupStyle();
-
-	UpdateRecentFiles();
-}
-
-QtApp::~QtApp()
-{
-	SaveSettings();
-	SaveDialog();
-}
-
-/* ******************************************************************************** *\
-	menu->file
-\* ******************************************************************************** */
-void QtApp::OpenRecent()
-{
-	const auto action{qobject_cast<QAction*>(sender())};
-	if (!action)
-	{
-		// how did we get here?
-		return;
-	}
-
-	QString fileName;
-
-	if (!action->data().isNull())
-	{
-		fileName = action->data().toString();
-	}
-
-	if (fileName.isEmpty())
-	{
-		// missing filename in recent entry, try to recover with QFileDialog
-		fileName = QFileDialog::getOpenFileName(this, tr("Locate File..."));
-	}
-
-	OpenFile(std::move(fileName));
-}
-
-void QtApp::on_actionOpen_triggered()
-{
-	OpenFile(std::move(QFileDialog::getOpenFileName(this, tr("Open File..."))));
-}
-
-// sadly this can't be done in a new thread, because QtApp::LoadFile() has to be done in the QtGui thread
-void QtApp::OpenFile(QString fileName)
-{
-	if (fileName.isNull())
-	{
-		// user cancelled action during QFileDialog
-		return;
-	}
-
-	QFile file(fileName);
-
-	if (!file.exists())
-	{
-		// invalid filename, try to locate if the file was moved (or just open something else)
-		fileName = QFileDialog::getOpenFileName(this, tr("Locate File..."));
-
-		if (fileName.isNull())
-		{
-			// user cancelled action during QFileDialog
-			return;
-		}
-		else
-		{
-			file.setFileName(fileName);
-		}
-	}
-
-	if (!file.open(QIODevice::ReadOnly | QFile::Text))
-	{
-		// genuine error state
-		QMessageBox::warning(this, tr("Warning"), tr("Cannot open file [%1]:\n{%2}").arg(QDir::toNativeSeparators(fileName), file.errorString()));
-	}
-	else
-	{
-		LoadFile(file);
-	}
-
-	file.close();
-}
-
-void QtApp::on_actionSave_triggered()
-{
-}
-
-void QtApp::on_actionSave_As_triggered()
-{
-}
-
-void QtApp::on_actionSave_All_triggered()
-{
-}
-
-void QtApp::on_actionReload_triggered()
-{
-}
-
-void QtApp::on_actionReload_All_triggered()
-{
-}
-
-void QtApp::on_actionExit_triggered()
-{
-	// TODO check if save on close is enabled
-	/*
-	if (should save)
-	{
-		// save stuff
-	}
-	*/
-
-	// cleanly quit
-	qApp->quit();
-}
-
-/* ******************************************************************************** *\
-	menu->edit
-\* ******************************************************************************** */
-void QtApp::on_actionUndo_triggered()
-{
-}
-
-void QtApp::on_actionRedo_triggered()
-{
-}
-
-void QtApp::on_actionCut_triggered()
-{
-}
-
-void QtApp::on_actionCopy_triggered()
-{
-}
-
-void QtApp::on_actionPaste_triggered()
-{
-}
-
-void QtApp::on_actionDelete_triggered()
-{
-}
-
-void QtApp::on_actionDuplicate_triggered()
-{
-}
-
-void QtApp::on_actionSelect_All_triggered()
-{
-}
-
-/* ******************************************************************************** *\
-	menu->search
-\* ******************************************************************************** */
-void QtApp::on_actionFind_triggered()
-{
-}
-
-void QtApp::on_actionFind_Next_triggered()
-{
-}
-
-void QtApp::on_actionFind_Previous_triggered()
-{
-}
-
-void QtApp::on_actionFind_All_triggered()
-{
-}
-
-void QtApp::on_actionReplace_triggered()
-{
-}
-
-void QtApp::on_actionReplace_Next_triggered()
-{
-}
-
-void QtApp::on_actionReplace_Previous_triggered()
-{
-}
-
-void QtApp::on_actionReplace_All_triggered()
-{
-}
-
-/* ******************************************************************************** *\
-	menu->tools
-\* ******************************************************************************** */
-void QtApp::on_actionSettings_triggered()
-{
-	settingsDialog->show();
-}
-
-void QtApp::on_actionRoll_triggered()
-{
 }

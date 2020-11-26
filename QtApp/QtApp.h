@@ -28,20 +28,47 @@ private:
 	std::vector<std::unique_ptr<QAction>> recentFileActions;
 	QString currentFile;
 
-	auto GetRecentFiles() const;
-	void UpdateRecentFiles();
-	void ConnectRecent(QStringList& files);
-	void OpenRecent();
-	void OpenFile(QString fileName);
+	auto GetRecentFiles() const
+	{
+		QStringList files;
 
-	void LoadSettings();
-	void SaveSettings();
+		settings->beginGroup("RecentFiles");
+		std::ranges::for_each(settings->childKeys(), [&](auto&& key){ files.push_back(settings->value(key).value<QString>()); });
+		settings->endGroup();
+
+		// TODO confirm RVO is happening
+		return files;
+	}
+
+	void ConnectRecent(QStringList& files);
+	void UpdateRecentFiles();
+	void OpenRecent();
 
 	void LoadFile(QFile& file);
-	void SaveDialog();
+	void OpenFile(QString fileName);
+
+	void SaveDialog() {}
+
+	void GenerateDefaultSettings();
+
+	void LoadSettings();
+	void SaveSettings()
+	{
+		if (settings->status() != QSettings::NoError)
+		{
+			QMessageBox::warning(this, tr("Error"), tr("[Error] Saving Settings; Status Code: {%1}").arg(settings->status()));
+		}
+		else if (!settings->isWritable())
+		{
+			QMessageBox::warning(this, tr("Warning"), tr("[Warning] Saving Settings; Location Non-writable: {%1}").arg(settings->fileName()));
+		}
+		else
+		{
+			settings->sync();
+		}
+	}
 
 	void SetupStyle();
-	void GenerateDefaultSettings();
 
 	// do not copy
 	QtApp(const QtApp&) = delete;
@@ -52,7 +79,8 @@ private:
 	QtApp& operator=(QtApp&&) = delete;
 
 public:
-	QtApp(QWidget* parent = (QWidget*)nullptr); // parent default casted this way in Qt
+	QtApp(QWidget* parent = (QWidget*)nullptr);
+
 	~QtApp();
 
 public slots:
@@ -63,41 +91,68 @@ public slots:
 	}
 
 private slots:
-	void on_actionNew_triggered();
-	void on_actionOpen_triggered();
+	void on_actionNew_triggered() {}
+	void on_actionOpen_triggered()
+	{
+		OpenFile(std::move(QFileDialog::getOpenFileName(this, tr("Open File..."))));
+	}
 
-	void on_actionSave_triggered();
-	void on_actionSave_As_triggered();
-	void on_actionSave_All_triggered();
+	void on_actionSave_triggered() {}
+	void on_actionSave_As_triggered() {}
+	void on_actionSave_All_triggered() {}
 
-	void on_actionReload_triggered();
-	void on_actionReload_All_triggered();
+	void on_actionReload_triggered() {}
+	void on_actionReload_All_triggered() {}
 
-	void on_actionExit_triggered();
+	void on_actionUndo_triggered() {}
+	void on_actionRedo_triggered() {}
 
-	void on_actionUndo_triggered();
-	void on_actionRedo_triggered();
+	void on_actionCut_triggered() {}
+	void on_actionCopy_triggered() {}
+	void on_actionPaste_triggered() {}
+	void on_actionDelete_triggered() {}
+	void on_actionDuplicate_triggered() {}
 
-	void on_actionCut_triggered();
-	void on_actionCopy_triggered();
-	void on_actionPaste_triggered();
-	void on_actionDelete_triggered();
-	void on_actionDuplicate_triggered();
+	void on_actionSelect_All_triggered() {}
 
-	void on_actionSelect_All_triggered();
+	void on_actionFind_triggered() {}
+	void on_actionFind_Next_triggered() {}
+	void on_actionFind_Previous_triggered() {}
+	void on_actionFind_All_triggered() {}
 
-	void on_actionFind_triggered();
-	void on_actionFind_Next_triggered();
-	void on_actionFind_Previous_triggered();
-	void on_actionFind_All_triggered();
-
-	void on_actionReplace_triggered();
-	void on_actionReplace_Next_triggered();
-	void on_actionReplace_Previous_triggered();
-	void on_actionReplace_All_triggered();
+	void on_actionReplace_triggered() {}
+	void on_actionReplace_Next_triggered() {}
+	void on_actionReplace_Previous_triggered() {}
+	void on_actionReplace_All_triggered() {}
 
 	void on_actionSettings_triggered();
-	void on_actionRoll_triggered();
 
-	void on_tabWidget_tabCloseRequested(int index);
+	void on_tabWidget_tabCloseRequested(int index)
+	{
+		// TODO check if Qt already handles memory of child pointers, for now delete everything we new'd
+		auto tab{ui->tabWidget->widget(index)};
+		auto layout{tab->layout()};
+		auto widget{layout->itemAt(0)};
+
+		layout->removeItem(widget);
+		ui->tabWidget->removeTab(index);
+
+		delete widget;
+		delete layout;
+		delete tab;
+	}
+
+	void on_actionExit_triggered()
+	{
+		// TODO check if save on close is enabled
+		/*
+		if (should save)
+		{
+			// save stuff
+		}
+		*/
+
+		// cleanly quit
+		qApp->quit();
+	}
 };
