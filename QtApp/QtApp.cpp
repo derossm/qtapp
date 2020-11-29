@@ -46,6 +46,7 @@ void QtApp::ConnectRecent(QStringList& files)
 	while (recentFileActions.size() > 0)
 	{
 		QObject::disconnect(recentFileActions.back().get());
+		//QObject::disconnect(recentFileActions.back());
 		recentFileActions.pop_back();
 	}
 
@@ -62,7 +63,8 @@ void QtApp::ConnectRecent(QStringList& files)
 
 	for (auto& val : files)
 	{
-		auto recentFileAction{std::make_unique<QAction>(this)};
+		//auto recentFileAction{std::make_unique<QAction>(this)};
+		auto& recentFileAction{recentFileActions.emplace_back(std::make_unique<QAction>(this))};
 
 		recentFileAction->setVisible(true);
 		recentFileAction->setText(val);
@@ -71,7 +73,7 @@ void QtApp::ConnectRecent(QStringList& files)
 		QObject::connect(recentFileAction.get(), &QAction::triggered, this, &QtApp::OpenRecent);
 		ui->menuOpen_Recent->addAction(recentFileAction.get());
 
-		recentFileActions.push_back(std::move(recentFileAction));
+		//recentFileActions.push_back(std::move(recentFileAction));
 	}
 
 	recentFileActions.shrink_to_fit();
@@ -130,19 +132,16 @@ void QtApp::LoadFile(QFile& file)
 
 	const auto tokens{currentFile.split('/')};
 
-	const auto name{[&]{ return tokens.length() ? tokens.at(tokens.length()-1) : tr("New File"); }()}; //initialize local with immediate lambda call
+	//initialize local with immediate lambda call
+	const auto name{[&]{ return tokens.length() ? tokens.at(tokens.length()-1) : tr("New File"); }()};
 
 	// TODO move tab setup to a new function
 	auto textEdit{new QTextEdit()};
 
-	// scope for stream
+	if (QTextStream in(&file); in.status() == QTextStream::Status::Ok)
 	{
-		QTextStream in(&file);
-		if (in.status() == QTextStream::Status::Ok)
-		{
-			textEdit->setPlainText(in.readAll());
-			// should we check if in.readAll() succeeds? how does setPlainText handle failure TODO
-		}
+		textEdit->setPlainText(in.readAll());
+		// should we check if in.readAll() succeeds? how does setPlainText handle failure TODO
 	}
 
 	// setup tabs for text alignment, default is atrocious
@@ -262,9 +261,8 @@ void QtApp::LoadSettings()
 				return;
 			}
 
-			const auto pos{fileName.lastIndexOf('.')};
 			// trim any file ext, NOTE: will also trim part of the name if there is no ext and the name includes any .'s
-			if (pos > 0)
+			if (const auto pos{fileName.lastIndexOf('.')}; pos > 0)
 			{
 				// I don't know if truncate checks for bounds, and might as well skip a search if out of bounds
 				if (pos <= fileName.size() - 1)
@@ -282,8 +280,7 @@ void QtApp::LoadSettings()
 			extern Q_CORE_EXPORT int qt_ntfs_permission_lookup;
 			qt_ntfs_permission_lookup++;
 
-			QFile file(fileName);
-			if (file.exists())
+			if (QFile file(fileName); file.exists())
 			{
 				// make sure existing backup file permissions allow write
 				//if (!(file.permissions() & QFileDevice::WriteUser))

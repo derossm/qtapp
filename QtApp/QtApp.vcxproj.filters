@@ -75,6 +75,9 @@
     <ClInclude Include="P_1446E.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="RayTracing.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />

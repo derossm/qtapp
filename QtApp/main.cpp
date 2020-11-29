@@ -53,13 +53,13 @@ namespace UI
 
 
 //ENTRY:mainCRTStartup
-int main(int argc, char* argv[])
+int main(int argc, char* argv[], char** envp)
 {
 	Problem_1446E obj1446e;
 	Problem_1442E<int,int> obj1442e;
 	ns::Problem_1327G obj1327g;
 
-	QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+	//QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 	QApplication app(argc, argv);
 
 	QtApp widget;

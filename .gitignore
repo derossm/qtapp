@@ -7,3 +7,5 @@
 /x64/Debug
 /x64/Release
 /utest/x64
+/utest/build
+/utest/CMakeLists.txt
