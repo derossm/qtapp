@@ -8,9 +8,34 @@
 
 #include "stdafx.h"
 
+#include <QGuiApplication>
+//#include <QQmlApplicationEngine>
+
 #include <QtWidgets>
+#include <QtWidgets/QDialog>
+#include <QtWidgets/QDialogButtonBox>
+
+#include <QThread>
+#include <QFuture>
+#include <QtConcurrent/QtConcurrentRun.h>
+
+// unnecessary?
+#include <QObject>
+
+// duplicates in ui_QtApp.h
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QMainWindow>
+#include <QtCore/QVariant>
+
+// duplicates in ui_QtApp.h
+#include <QtGui/QAction>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QMenuBar>
+#include <QtWidgets/QStatusBar>
+#include <QtWidgets/QTabWidget>
+#include <QtWidgets/QToolBar>
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QWidget>
 
 #include "uic/ui_QtApp.h"
 
@@ -64,9 +89,11 @@ private:
 		}
 		else
 		{
-			settings->sync();
+			auto back{ QtConcurrent::run([&]{ settings->sync(); }) };
 		}
 	}
+
+	void BackupSettings();
 
 	void SetupStyle();
 

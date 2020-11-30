@@ -4,11 +4,6 @@
 
 #include "stdafx.h"
 
-#include <QThread>
-#include <QFuture>
-#include <QtConcurrent/QtConcurrentRun.h>
-#include <QtCore/QVariant>
-
 #include "QtApp.h"
 #include "SettingsDialog.h"
 
@@ -27,7 +22,7 @@ QtApp::QtApp(QWidget* parent) : QMainWindow(parent), ui(std::make_unique<Ui::QtG
 
 QtApp::~QtApp()
 {
-	SaveSettings();
+	//SaveSettings();
 	SaveDialog();
 }
 
@@ -43,27 +38,17 @@ void QtApp::on_actionSettings_triggered()
 void QtApp::ConnectRecent(QStringList& files)
 {
 	// more work to check recent are valid still, just reset connected actions TODO think about
-	while (recentFileActions.size() > 0)
+	//while (recentFileActions.size() > 0)
+	for (auto size{recentFileActions.size()}; size > 0; size--)
 	{
 		QObject::disconnect(recentFileActions.back().get());
-		//QObject::disconnect(recentFileActions.back());
 		recentFileActions.pop_back();
 	}
-
-	/*for (auto& iter : recentFileActions)
-	{
-		QObject::disconnect(iter.get());
-	}
-	recentFileActions.clear();*/
-
-	//std::ranges::for_each(recentFileActions, [&](auto& iter){ QObject::disconnect(iter.get()); });
-	//recentFileActions.clear();
 
 	recentFileActions.reserve(files.size());
 
 	for (auto& val : files)
 	{
-		//auto recentFileAction{std::make_unique<QAction>(this)};
 		auto& recentFileAction{recentFileActions.emplace_back(std::make_unique<QAction>(this))};
 
 		recentFileAction->setVisible(true);
@@ -72,8 +57,6 @@ void QtApp::ConnectRecent(QStringList& files)
 
 		QObject::connect(recentFileAction.get(), &QAction::triggered, this, &QtApp::OpenRecent);
 		ui->menuOpen_Recent->addAction(recentFileAction.get());
-
-		//recentFileActions.push_back(std::move(recentFileAction));
 	}
 
 	recentFileActions.shrink_to_fit();
@@ -110,14 +93,11 @@ void QtApp::UpdateRecentFiles()
 		std::ranges::for_each(settings->childKeys(), [&](auto&& key){ settings->remove(key); });
 		settings->endGroup();
 
-		SaveSettings();
-
-		//for (auto&& v : files) // need a counter, might as well use normal for loop
-		//const auto size{files.size()};
-		for (qsizetype i{0}, size{files.size()}; i < size; ++i)
 		{
-			settings->setValue(tr("RecentFiles/recent%1").arg(i), files.at(i));
+			auto i{0};
+			std::ranges::for_each(files, [&](auto&& key){ settings->setValue(tr("RecentFiles/recent%1").arg(i), key); i++; });
 		}
+		SaveSettings();
 	}
 
 	ConnectRecent(files);
@@ -251,59 +231,63 @@ void QtApp::LoadSettings()
 	}
 	else
 	{
-		// backup the settings file in a new thread
-		QFuture<void> back = QtConcurrent::run([&]
-		{
-			auto fileName{settings->fileName()};
-			if (fileName.isEmpty())
-			{
-				// can't backup: there isn't any settings file
-				return;
-			}
+		BackupSettings();
+	}
+}
 
-			// trim any file ext, NOTE: will also trim part of the name if there is no ext and the name includes any .'s
-			if (const auto pos{fileName.lastIndexOf('.')}; pos > 0)
+void QtApp::BackupSettings()
+{
+	// backup the settings file in a new thread
+	QFuture<void> back = QtConcurrent::run([&]
+	{
+		auto fileName{settings->fileName()};
+		if (fileName.isEmpty())
+		{
+			// can't backup: there isn't any settings file
+			return;
+		}
+
+		// trim any file ext, NOTE: will also trim part of the name if there is no ext and the name includes any .'s
+		if (const auto pos{fileName.lastIndexOf('.')}; pos > 0)
+		{
+			// I don't know if truncate checks for bounds, and might as well skip a search if out of bounds
+			if (pos <= fileName.size() - 1)
 			{
-				// I don't know if truncate checks for bounds, and might as well skip a search if out of bounds
-				if (pos <= fileName.size() - 1)
+				// ensure the directory name isn't altered
+				if (fileName.lastIndexOf('/') < pos)
 				{
-					// ensure the directory name isn't altered
-					if (fileName.lastIndexOf('/') < pos)
-					{
-						fileName.truncate(pos + 1);
-					}
+					fileName.truncate(pos + 1);
 				}
 			}
-			fileName = tr("%1backup.ini").arg(fileName);
+		}
+		fileName = tr("%1backup.ini").arg(fileName);
 
+		if (QFile file(fileName); file.exists())
+		{
 			// temporarily enable ntfs permission lookup
 			extern Q_CORE_EXPORT int qt_ntfs_permission_lookup;
 			qt_ntfs_permission_lookup++;
 
-			if (QFile file(fileName); file.exists())
+			// make sure existing backup file permissions allow write
+			//if (!(std::bit_and<QFileDevice::Permissions>()(file.permissions(), QFileDevice::WriteUser)))
+			if (!(file.permissions() & QFileDevice::WriteUser)) // INTENTION BITWISE
 			{
-				// make sure existing backup file permissions allow write
-				//if (!(file.permissions() & QFileDevice::WriteUser))
-				if (!(std::bit_and<QFileDevice::Permissions>()(file.permissions(), QFileDevice::WriteUser)))
+				if (!file.remove())
 				{
-					if (!file.remove())
-					{
-						// can't backup: existing backup won't cooperate
-						return;
-					}
+					// can't backup: existing backup won't cooperate
+					return;
 				}
 			}
 			qt_ntfs_permission_lookup--;
+		}
 
-			auto backup{std::make_unique<QSettings>(QSettings::IniFormat, QSettings::UserScope, QCoreApplication::organizationName(), tr("%1.backup").arg(QCoreApplication::applicationName()))};
+		assert(settings->isAtomicSyncRequired());
+		auto backup{std::make_unique<QSettings>(QSettings::IniFormat, QSettings::UserScope, QCoreApplication::organizationName(), tr("%1.backup").arg(QCoreApplication::applicationName()))};
 
-			std::ranges::for_each(settings->allKeys(), [&](auto&& key){ backup->setValue(key, settings->value(key)); });
+		std::ranges::for_each(settings->allKeys(), [&](auto&& key){ backup->setValue(key, settings->value(key)); });
 
-			backup->sync();
-		}); // End QFuture
-	}
-
-	//settings->sync();
+		backup->sync();
+	}); // End QFuture
 }
 
 void QtApp::GenerateDefaultSettings()

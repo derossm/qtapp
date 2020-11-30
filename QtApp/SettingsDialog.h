@@ -6,9 +6,6 @@
 
 #include "stdafx.h"
 
-#include <QtWidgets/QDialog>
-#include <QtWidgets/QDialogButtonBox>
-
 #include "QtApp.h"
 
 class SettingsDialog : public QDialog

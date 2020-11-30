@@ -4,9 +4,6 @@
 
 #include "stdafx.h"
 
-#include <QGuiApplication>
-//#include <QQmlApplicationEngine>
-
 #include "QtApp.h"
 #include "TypeErasure.h"
 #include "P_1442E.h"
