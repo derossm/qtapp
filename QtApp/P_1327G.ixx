@@ -34,12 +34,16 @@ export
 		// test case generator atm, replace later TODO with parsing real pattern input
 		void populatePatterns() noexcept;
 
+		[[nodiscard]]
 		size_t calculate() noexcept;
 
+		[[nodiscard]]
 		size_t patternMatchSimple(std::string_view pattern) const noexcept;
 
+		[[nodiscard]]
 		size_t patternMatchWildcards(std::string_view pattern) const noexcept;
 
+		[[nodiscard]]
 		bool patternMatchRegex() const noexcept;
 	};
 } // export

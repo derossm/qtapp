@@ -2,8 +2,12 @@
 
 \* ************************************************************************************************************************************************ */
 
+#include "stdafx.h"
+
 #define CATCH_CONFIG_RUNNER
+#pragma warning(push, 0)
 #include "catch.hpp"
+#pragma warning(pop)
 
 #include "..\QtApp\QtApp.h"
 

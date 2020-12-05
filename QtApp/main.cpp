@@ -50,40 +50,39 @@ namespace UI
 
 
 //ENTRY:mainCRTStartup
-int main(int argc, char* argv[], char** envp)
+int main(int argc, char* argv[]) //, char** envp)
 {
 	Problem_1446E obj1446e;
 	Problem_1442E<int,int> obj1442e;
 	ns::Problem_1327G obj1327g;
 
-	//QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 	QApplication app(argc, argv);
 
 	QtApp widget;
-	//QQmlApplicationEngine engine;
+	QQmlApplicationEngine engine;
 
 	switch (UI::osName())
 	{
 	// mobile
-	case UI::os::android:
+	case UI::os::android: [[fallthrough]];
 	case UI::os::ios:
-		//engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
+		engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
 
-		//if (engine.rootObjects().isEmpty())
-		//{
-			//return EXIT_FAILURE;
-		//}
+		if (engine.rootObjects().isEmpty())
+		{
+			return EXIT_FAILURE;
+		}
 
 		break;
 	// desktop
-	case UI::os::windows:
-	case UI::os::linux:
+	[[likely]] case UI::os::windows: [[fallthrough]];
+	case UI::os::linux: [[fallthrough]];
 	case UI::os::osx:
 		widget.show();
 		break;
 	// other
-	case UI::os::unknown:
-	default:
+	[[unlikely]] case UI::os::unknown: [[fallthrough]];
+	[[unlikely]] default:
 		return EXIT_SUCCESS;
 	}
 

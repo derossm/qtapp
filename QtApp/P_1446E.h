@@ -26,13 +26,14 @@ public:
 	template<std::integral T>
 	void flip(T x, T y)
 	{
-		if (x < _n && y < _n)
+		if (x < _n && y < _n) [[likely]]
 		{
 			_matrix[y*_size + x].flip();
 		}
 	}
 
 	template<std::integral T>
+	[[nodiscard]]
 	bool value(T x, T y)
 	{
 		return x < _n && y < _n && _matrix[y*_size + x];

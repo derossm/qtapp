@@ -29,7 +29,7 @@ namespace ns
 	void Problem_1327G::populatePatterns() noexcept
 	{
 		using namespace std::literals;
-		input(3, std::move(std::vector{"?a?bc?def???ghij??klmn?abcaa"s, "a"s, "aa"s, "abc"s}));
+		input(3u, std::move(std::vector{"?a?bc?def???ghij??klmn?abcaa"s, "a"s, "aa"s, "abc"s}));
 	}
 
 	size_t Problem_1327G::calculate() noexcept
@@ -38,28 +38,28 @@ namespace ns
 
 		if (size_t i{entry.find('?')}; i != std::string::npos)
 		{
-			if (i > 0)
+			if (i > 0u)
 			{
 				// emplace anything before the first '?' if anything present
-				substrings.emplace_back(entry.substr(0, i));
+				substrings.emplace_back(entry.substr(0u, i));
 			}
-			mask.emplace_back(std::pair{i, std::size_t{0}});
+			mask.emplace_back(std::pair{i, std::size_t{0u}});
 
 			for (++i; (i = entry.find('?', i)) != std::string::npos; ++i)
 			{
 				auto pos{mask.back().first};
-				if (i > (pos + 1))
+				if (i > (pos + 1u))
 				{
 					// emplace anything between current and previous '?' if non-sequential '?'
-					substrings.emplace_back(entry.substr(pos + 1, i - pos - 1));
+					substrings.emplace_back(entry.substr(pos + 1u, i - pos - 1u));
 				}
 				mask.emplace_back(std::pair{i, i - pos});
 			}
 
-			if (entry.length() > (mask.back().first + 1))
+			if (entry.length() > (mask.back().first + 1u))
 			{
 				// emplace anything after the final '?' if anything remains
-				substrings.emplace_back(entry.substr(mask.back().first + 1));
+				substrings.emplace_back(entry.substr(mask.back().first + 1u));
 			}
 		}
 		else
@@ -67,8 +67,8 @@ namespace ns
 			substrings.emplace_back(std::reference_wrapper(entry)); // try not to excessively copy the string w/ size up to 400,000 characters
 		}
 
-		size_t matches{0};
-		for (auto& iter : patterns)
+		size_t matches{0u};
+		for (const auto& iter : patterns)
 		{
 			// would it be more efficient to parse every pattern at a sub-stage?
 			// might profile that later
@@ -81,9 +81,9 @@ namespace ns
 
 	size_t Problem_1327G::patternMatchSimple(std::string_view pattern) const noexcept
 	{
-		size_t weight{0};
+		size_t weight{0u};
 
-		for (auto& iter : substrings)
+		for (const auto& iter : substrings)
 		{
 			const size_t max_len{iter.length()};
 			const size_t len{pattern.length()};
@@ -91,16 +91,16 @@ namespace ns
 			if (max_len >= len)
 			{
 				const size_t end{max_len - len};
-				const auto str{iter.substr(0, max_len)}; // get the actual size, avoid manual checking r-side bound
+				const auto str{iter.substr(0u, max_len)}; // get the actual size, avoid manual checking r-side bound
 
-				for (size_t i{0}; i <= end; ++i)
+				for (size_t i{0u}; i <= end; ++i)
 				{
 					[&pattern, &weight](std::string_view str)
 					{
 						if (str.find(pattern) != std::string::npos)
 						{
 							// DO STUFF HERE, MATCH
-							weight += 1;
+							++weight;
 						}
 					}(str.substr(i, len));
 				}
@@ -112,16 +112,16 @@ namespace ns
 
 	size_t Problem_1327G::patternMatchWildcards(std::string_view pattern) const noexcept
 	{
-		size_t weight{0};
+		size_t weight{0u};
 
 		const size_t max_len{entry.length()};
 		const size_t len{pattern.length()};
 
 		// it should be impossible for this to be false by construction of pattern, but invalid input is possible
-		if (len <= max_len)
+		if (len <= max_len) [[likely]]
 		{
-			size_t xpos{0};
-			for (auto& iter : mask)
+			size_t xpos{0u};
+			for (const auto& iter : mask)
 			{
 				const size_t pos{iter.first};
 
@@ -133,7 +133,7 @@ namespace ns
 					return weight;
 				}
 
-				if (xpos > pos)
+				if (xpos > pos) [[unlikely]]
 				{
 					// ALREADY PARSED THIS -- is this possible with current algorithm?
 					continue;
@@ -160,7 +160,7 @@ namespace ns
 							// if [len > pos], then [len > (pos - xpos)]
 							// but [(pos - xpos) >= len]
 							// thus [pos >= len] by contradiction
-							return (pos - len) + 1;
+							return (pos - len) + 1u;
 						}
 					}
 				()};
@@ -170,14 +170,14 @@ namespace ns
 				if (const auto str{entry.substr(start, size)}; str.length() >= len)
 				{
 					const size_t end{str.length() - len};
-					for (size_t i{0}; i <= end; ++i)
+					for (size_t i{0u}; i <= end; ++i)
 					{
 						[&pattern, &weight](auto&& str)
 						{
 							//size_t pos{0};
 							//while ((pos = str.find('?', pos)) != std::string::npos)
 							//for (size_t pos{str.find('?', pos)}; pos != std::string::npos; pos = str.find('?', pos))
-							for (size_t pos{0}; (pos = str.find('?', pos)) != std::string::npos;)
+							for (size_t pos{0u}; (pos = str.find('?', pos)) != std::string::npos;)
 							{
 								str.at(pos) = pattern.at(pos);
 							}
@@ -185,11 +185,11 @@ namespace ns
 							if (str.find(pattern) != std::string::npos)
 							{
 								// DO STUFF HERE, MATCH
-								weight += 1;
+								++weight;
 							}
 						}(std::move(std::string{str.substr(i, len)}));
 					}
-					xpos = start + end + 1;
+					xpos = start + end + 1u;
 				}
 			}
 		}

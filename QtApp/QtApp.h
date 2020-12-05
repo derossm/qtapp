@@ -8,8 +8,9 @@
 
 #include "stdafx.h"
 
+#pragma warning(push, 0)
 #include <QGuiApplication>
-//#include <QQmlApplicationEngine>
+#include <QQmlApplicationEngine>
 
 #include <QtWidgets>
 #include <QtWidgets/QDialog>
@@ -36,6 +37,7 @@
 #include <QtWidgets/QToolBar>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
+#pragma warning(pop)
 
 #include "uic/ui_QtApp.h"
 
@@ -53,6 +55,7 @@ private:
 	std::vector<std::unique_ptr<QAction>> recentFileActions;
 	QString currentFile;
 
+	[[nodiscard]]
 	auto GetRecentFiles() const
 	{
 		QStringList files;
@@ -79,15 +82,15 @@ private:
 	void LoadSettings();
 	void SaveSettings()
 	{
-		if (settings->status() != QSettings::NoError)
+		if (settings->status() != QSettings::NoError) [[unlikely]]
 		{
 			QMessageBox::warning(this, tr("Error"), tr("[Error] Saving Settings; Status Code: {%1}").arg(settings->status()));
 		}
-		else if (!settings->isWritable())
+		else if (!settings->isWritable()) [[unlikely]]
 		{
 			QMessageBox::warning(this, tr("Warning"), tr("[Warning] Saving Settings; Location Non-writable: {%1}").arg(settings->fileName()));
 		}
-		else
+		else [[likely]]
 		{
 			auto back{ QtConcurrent::run([&]{ settings->sync(); }) };
 		}
@@ -154,6 +157,7 @@ private slots:
 
 	void on_actionSettings_triggered();
 
+	// NOTE Qt uses int for index of widget, so don't use unsigned literals here Qt 6.0
 	void on_tabWidget_tabCloseRequested(int index)
 	{
 		// TODO check if Qt already handles memory of child pointers, for now delete everything we new'd

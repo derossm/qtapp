@@ -40,11 +40,11 @@ void SettingsDialog::setColor()
 	//QSettings settings(QSettings::IniFormat, QSettings::UserScope, QCoreApplication::organizationName(), QCoreApplication::applicationName());
 	settings = std::make_unique<QSettings>(QSettings::IniFormat, QSettings::UserScope, QCoreApplication::organizationName(), QCoreApplication::applicationName());
 
-	if (settings->status() != QSettings::NoError)
+	if (settings->status() != QSettings::NoError) [[unlikely]]
 	{
 		QMessageBox::warning(this, tr("Error"), tr("[Error] Loading Settings; Status Code: {%1}").arg(settings->status()));
 	}
-	else if (!settings->isWritable())
+	else if (!settings->isWritable()) [[unlikely]]
 	{
 		QMessageBox::warning(this, tr("Warning"), tr("[Warning] Loading Settings; Location Non-writable: {%1}").arg(settings->fileName()));
 	}
