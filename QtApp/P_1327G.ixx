@@ -5,7 +5,6 @@
 	otherwise errors prevent compilation -- can't use import std.* either, because Qt uses #include versions of same code and causes a lot of errors
 
 \* ************************************************************************************************************************************************ */
-
 module;
 
 #include "stdafx.h"

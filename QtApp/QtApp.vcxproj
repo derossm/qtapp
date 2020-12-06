@@ -83,8 +83,11 @@
       </PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>
       </PrecompiledHeaderOutputFile>
-      <ForceInclude>stdafx.h;QtApp.h</ForceInclude>
+      <ForceInclude>stdafx.h;QtApp.h;QtTablet.h</ForceInclude>
     </QtMoc>
+    <Link>
+      <AdditionalLibraryDirectories>$(Qt_LIBPATH_);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -116,11 +119,12 @@
       </PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>
       </PrecompiledHeaderOutputFile>
-      <ForceInclude>stdafx.h;QtApp.h</ForceInclude>
+      <ForceInclude>stdafx.h;QtApp.h;QtTablet.h</ForceInclude>
     </QtMoc>
     <Link>
       <LinkTimeCodeGeneration>
       </LinkTimeCodeGeneration>
+      <AdditionalLibraryDirectories>$(Qt_LIBPATH_);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="QtSettings">
@@ -141,7 +145,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
     <ClCompile>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MultiProcessorCompilation>false</MultiProcessorCompilation>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -154,7 +158,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="Configuration">
     <ClCompile>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MultiProcessorCompilation>false</MultiProcessorCompilation>
       <DebugInformationFormat>None</DebugInformationFormat>
       <Optimization>MaxSpeed</Optimization>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -172,6 +176,7 @@
     <ClCompile Include="P_1327G.cpp" />
     <ClCompile Include="P_1327G.ixx" />
     <ClCompile Include="QtApp.cpp" />
+    <ClCompile Include="QtTablet.cpp" />
     <ClCompile Include="SettingsDialog.cpp" />
     <ClCompile Include="stdafx.cpp" />
   </ItemGroup>
@@ -182,6 +187,8 @@
     <ClInclude Include="P_1327G_v2.h" />
     <ClInclude Include="P_1442E.h" />
     <ClInclude Include="P_1446E.h" />
+    <QtMoc Include="QtTablet.h" />
+    <ClInclude Include="QtHeaders.h" />
     <ClInclude Include="RayTracing.h" />
     <ClInclude Include="SettingsDialog.h" />
     <ClInclude Include="stdafx.h" />

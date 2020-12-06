@@ -30,6 +30,9 @@
     <QtMoc Include="QtApp.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="QtTablet.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="QtApp.cpp">
@@ -49,6 +52,9 @@
     </ClCompile>
     <ClCompile Include="P_1327G.ixx">
       <Filter>Module Files</Filter>
+    </ClCompile>
+    <ClCompile Include="QtTablet.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -76,6 +82,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="RayTracing.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="QtHeaders.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

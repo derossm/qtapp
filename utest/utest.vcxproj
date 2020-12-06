@@ -86,7 +86,7 @@
     </QtMoc>
     <Link />
     <Link>
-      <AdditionalDependencies>$(Qt_LIBS_);moc_QtApp.obj;P_1327G.ixx.obj;P_1327G.obj;QtApp.obj;SettingsDialog.obj;stdafx.obj;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(Qt_LIBS_);moc_QtApp.obj;P_1327G.ixx.obj;P_1327G.obj;QtApp.obj;SettingsDialog.obj;stdafx.obj;QtTablet.obj;moc_QtTablet.obj;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)QtApp\$(IntDir);$(Qt_LIBPATH_);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <LinkTimeCodeGeneration>
       </LinkTimeCodeGeneration>
@@ -126,7 +126,7 @@
     </QtMoc>
     <Link />
     <Link>
-      <AdditionalDependencies>$(Qt_LIBS_);moc_QtApp.obj;P_1327G.ixx.obj;P_1327G.obj;QtApp.obj;SettingsDialog.obj;stdafx.obj;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(Qt_LIBS_);moc_QtApp.obj;P_1327G.ixx.obj;P_1327G.obj;QtApp.obj;SettingsDialog.obj;stdafx.obj;QtTablet.obj;moc_QtTablet.obj;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)QtApp\$(IntDir);$(Qt_LIBPATH_);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <LinkTimeCodeGeneration>
       </LinkTimeCodeGeneration>

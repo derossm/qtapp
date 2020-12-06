@@ -12,7 +12,6 @@
 #define TWOBLUECUBES_SINGLE_INCLUDE_CATCH_HPP_INCLUDED
 // start catch.hpp
 
-
 #define CATCH_VERSION_MAJOR 2
 #define CATCH_VERSION_MINOR 13
 #define CATCH_VERSION_PATCH 3
@@ -17860,7 +17859,6 @@ using Catch::Detail::Approx;
 
 // start catch_reenable_warnings.h
 
-
 #ifdef __clang__
 #    ifdef __ICC // icpc defines the __clang__ macro
 #        pragma warning(pop)
@@ -17874,4 +17872,3 @@ using Catch::Detail::Approx;
 // end catch_reenable_warnings.h
 // end catch.hpp
 #endif // TWOBLUECUBES_SINGLE_INCLUDE_CATCH_HPP_INCLUDED
-

@@ -3,41 +3,10 @@
 
 	Note: following Qt style for Qt interfacing code
 \* ************************************************************************************************************************************************ */
-
 #pragma once
 
 #include "stdafx.h"
-
-#pragma warning(push, 0)
-#include <QGuiApplication>
-#include <QQmlApplicationEngine>
-
-#include <QtWidgets>
-#include <QtWidgets/QDialog>
-#include <QtWidgets/QDialogButtonBox>
-
-#include <QThread>
-#include <QFuture>
-#include <QtConcurrent/QtConcurrentRun.h>
-
-// unnecessary?
-#include <QObject>
-
-// duplicates in ui_QtApp.h
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QMainWindow>
-#include <QtCore/QVariant>
-
-// duplicates in ui_QtApp.h
-#include <QtGui/QAction>
-#include <QtWidgets/QMenu>
-#include <QtWidgets/QMenuBar>
-#include <QtWidgets/QStatusBar>
-#include <QtWidgets/QTabWidget>
-#include <QtWidgets/QToolBar>
-#include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QWidget>
-#pragma warning(pop)
+#include "QtHeaders.h"
 
 #include "uic/ui_QtApp.h"
 
@@ -64,7 +33,6 @@ private:
 		std::ranges::for_each(settings->childKeys(), [&](auto&& key){ files.push_back(settings->value(key).value<QString>()); });
 		settings->endGroup();
 
-		// TODO confirm RVO is happening
 		return files;
 	}
 
@@ -92,7 +60,10 @@ private:
 		}
 		else [[likely]]
 		{
-			auto back{ QtConcurrent::run([&]{ settings->sync(); }) };
+			// WARNING: in Qt 6, there are exceptions from sometimes atomic failures in this call TODO
+			// QFuture back creating a new thread for disk sync
+			//auto back{ QtConcurrent::run([&]{ try { settings->sync(); } catch (...){ std::cout<<"Exception during settings->sync()"; } }) };
+			settings->sync();
 		}
 	}
 
@@ -114,7 +85,7 @@ public:
 	~QtApp();
 
 public slots:
-	// must be accessible by SettingsDialog to trigger updating the style
+	// must be accessible by SettingsDialog to trigger updating the style TODO event handling
 	void UpdateStyle()
 	{
 		SetupStyle();
@@ -124,7 +95,8 @@ private slots:
 	void on_actionNew_triggered() {}
 	void on_actionOpen_triggered()
 	{
-		OpenFile(std::move(QFileDialog::getOpenFileName(this, tr("Open File..."))));
+		//OpenFile(std::move(QFileDialog::getOpenFileName(this, tr("Open File..."))));
+		OpenFile(QFileDialog::getOpenFileName(this, tr("Open File...")));
 	}
 
 	void on_actionSave_triggered() {}

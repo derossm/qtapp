@@ -1,15 +1,12 @@
 /* ************************************************************************************************************************************************ *\
 
 \* ************************************************************************************************************************************************ */
-
 #include "stdafx.h"
-
 #include "QtApp.h"
 #include "SettingsDialog.h"
 
 //#define GET_VARIABLE_NAME(Variable) (#Variable)
 
-// parent default casted this way in Qt
 QtApp::QtApp(QWidget* parent) : QMainWindow(parent), ui(std::make_unique<Ui::QtGuiApplicationClass>()), settingsDialog(std::make_unique<SettingsDialog>(this))
 {
 	ui->setupUi(this);
@@ -22,7 +19,7 @@ QtApp::QtApp(QWidget* parent) : QMainWindow(parent), ui(std::make_unique<Ui::QtG
 
 QtApp::~QtApp()
 {
-	//SaveSettings();
+	SaveSettings();
 	SaveDialog();
 }
 
@@ -30,10 +27,6 @@ void QtApp::on_actionSettings_triggered()
 {
 	settingsDialog->show();
 }
-
-/* ******************************************************************************** *\
-	menu setup
-\* ******************************************************************************** */
 
 void QtApp::ConnectRecent(QStringList& files)
 {
@@ -105,9 +98,6 @@ void QtApp::UpdateRecentFiles()
 	ConnectRecent(files);
 }
 
-/*
-	Loading/Saving files
-*/
 void QtApp::LoadFile(QFile& file)
 {
 	currentFile = file.fileName();
@@ -144,10 +134,6 @@ void QtApp::LoadFile(QFile& file)
 	UpdateRecentFiles();
 }
 
-/* ******************************************************************************** *\
-	menu->file
-\* ******************************************************************************** */
-
 // sadly this can't be done in a new thread, because QtApp::LoadFile() has to be done in the QtGui thread b/c of API
 void QtApp::OpenFile(QString fileName)
 {
@@ -169,7 +155,7 @@ void QtApp::OpenFile(QString fileName)
 			// user cancelled action during QFileDialog
 			return;
 		}
-		else
+		else [[likely]]
 		{
 			file.setFileName(fileName);
 		}
@@ -190,27 +176,27 @@ void QtApp::OpenFile(QString fileName)
 
 void QtApp::OpenRecent()
 {
-	const auto action{qobject_cast<QAction*>(sender())};
-	if (!action) [[unlikely]]
+	if (const auto action{qobject_cast<QAction*>(sender())}; !action) [[unlikely]]
 	{
 		// how did we get here?
 		return;
 	}
-
-	QString fileName;
-
-	if (!action->data().isNull()) [[likely]]
+	else [[likely]]
 	{
-		fileName = action->data().toString();
+		OpenFile([&]
+		{
+			if (!action->data().isNull()) [[likely]]
+			{
+				return action->data().toString();
+			}
+			else [[unlikely]]
+			{
+				// missing filename in recent entry, try to recover with QFileDialog
+				return QFileDialog::getOpenFileName(this, tr("Locate File..."));
+			}
+		}()
+		);
 	}
-
-	if (fileName.isEmpty()) [[unlikely]]
-	{
-		// missing filename in recent entry, try to recover with QFileDialog
-		fileName = QFileDialog::getOpenFileName(this, tr("Locate File..."));
-	}
-
-	OpenFile(std::move(fileName));
 }
 
 void QtApp::LoadSettings()
@@ -241,8 +227,10 @@ void QtApp::LoadSettings()
 void QtApp::BackupSettings()
 {
 	// backup the settings file in a new thread
+	/*
 	QFuture<void> back = QtConcurrent::run([&]
 	{
+	*/
 		auto fileName{settings->fileName()};
 		if (fileName.isEmpty()) [[unlikely]]
 		{
@@ -273,7 +261,7 @@ void QtApp::BackupSettings()
 
 			// make sure existing backup file permissions allow write
 			//if (!(std::bit_and<QFileDevice::Permissions>()(file.permissions(), QFileDevice::WriteUser)))
-			if (!(file.permissions() & QFileDevice::WriteUser)) [[unlikely]] // INTENTION BITWISE
+			if (!(file.permissions() & QFileDevice::WriteUser)) [[unlikely]] // INTENTIONAL BITWISE
 			{
 				if (!file.remove()) [[unlikely]]
 				{
@@ -284,28 +272,30 @@ void QtApp::BackupSettings()
 			--qt_ntfs_permission_lookup;
 		}
 
-		assert(settings->isAtomicSyncRequired());
+		Expects(settings->isAtomicSyncRequired());
 		auto backup{std::make_unique<QSettings>(QSettings::IniFormat, QSettings::UserScope, QCoreApplication::organizationName(), tr("%1.backup").arg(QCoreApplication::applicationName()))};
 
 		std::ranges::for_each(settings->allKeys(), [&](auto&& key){ backup->setValue(key, settings->value(key)); });
 
 		backup->sync();
+	/*
 	}); // End QFuture
+	*/
 }
 
 void QtApp::GenerateDefaultSettings()
 {
+	// clear any existing data when generating default
 	settings->clear();
 
-	// Recent Files
 	settings->setValue("System/MaxRecent", 5u);
 
-	// Style
 	settings->setValue("Style/Name", "Fusion");
 	settings->setValue("Style/Font", QApplication::font());
 	// Note: SetPointSize take a signed integer. This is Qt design decision, so don't use unsigned literals
 	settings->setValue("Style/PointSize", 10);
-	// QColor(int, int, int) despite using ushort internally, so don't use unsigned literals here
+
+	// Note: QColor(int, int, int) despite using ushort internally, so don't use unsigned literals here
 	settings->setValue("Style/Window",					QColor(53, 53, 53));		//QColor(53, 53, 53)
 	settings->setValue("Style/WindowText",				QColor(Qt::white));			//QColor(Qt::white)
 	settings->setValue("Style/DisabledWindowText",		QColor(127, 127, 127));		//QColor(127, 127, 127)
@@ -330,7 +320,6 @@ void QtApp::GenerateDefaultSettings()
 
 void QtApp::SetupStyle()
 {
-	// set style
 	qApp->setStyle(QStyleFactory::create(settings->value("Style/Name", "Fusion").value<QString>()));
 
 	// increase font size for better reading
@@ -339,9 +328,9 @@ void QtApp::SetupStyle()
 	font.setPointSize(settings->value("Style/PointSize", font.pointSize() + 2).value<int>());
 	qApp->setFont(font);
 
-	// modify palette to dark
+	// modify palette to dark theme by default, otherwise user settings values if available
 	QPalette palette;
-	// QColor(int, int, int) despite using ushort internally, so don't use unsigned literals here
+	// Note: QColor(int, int, int) despite using ushort internally, so don't use unsigned literals here
 	palette.setColor(QPalette::All,			QPalette::Window,			settings->value("Style/Window",						QColor(53, 53, 53)).value<QColor>());		//QColor(53, 53, 53)
 	palette.setColor(QPalette::All,			QPalette::WindowText,		settings->value("Style/WindowText",					QColor(Qt::white)).value<QColor>());		//QColor(Qt::white)
 	palette.setColor(QPalette::Disabled,	QPalette::WindowText,		settings->value("Style/DisabledWindowText",			QColor(127, 127, 127)).value<QColor>());	//QColor(127, 127, 127)

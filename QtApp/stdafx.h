@@ -1,12 +1,10 @@
 /* ************************************************************************************************************************************************ *\
 
 \* ************************************************************************************************************************************************ */
-
 #pragma once
 
 #define WIN32_LEAN_AND_MEAN
 
-//#pragma warning(push, 0)
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -35,6 +33,7 @@
 
 #include <bitset>
 #include <concepts>
-//#pragma warning(pop)
+
+#include <type_traits>
 
 #include <gsl/gsl>

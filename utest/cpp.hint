@@ -68,3 +68,6 @@
 #define AND_WHEN( desc )  INTERNAL_CATCH_DYNAMIC_SECTION( " And when: " << desc )
 #define THEN( desc )      INTERNAL_CATCH_DYNAMIC_SECTION( "     Then: " << desc )
 #define AND_THEN( desc )  INTERNAL_CATCH_DYNAMIC_SECTION( "      And: " << desc )
+
+#define Q_ENUM(x) Q_ENUMS(x) Q_ENUM_IMPL(x)
+#define Q_ENUM(x) Q_ENUM(x)
