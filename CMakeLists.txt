@@ -9,7 +9,6 @@ set(CMAKE_AUTORCC ON)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-#set(CMAKE_CXX_EXTENSIONS OFF)
 
 set(CMAKE_PREFIX_PATH G:/dev/Qt/6.0.0/msvc2019_64)
 
@@ -20,7 +19,7 @@ set(PROJECT_SOURCES
 		./QtApp/stdafx.h
 		./QtApp/QtHeaders.h
 		#./QtApp/P_1327G.ixx cmake doesn't support C++20 modules yet
-        ./QtApp/QtApp.h
+		./QtApp/QtApp.h
 		./QtApp/SettingsDialog.h
 		./QtApp/QtTablet.h
 		./QtApp/P_1442E.h
@@ -30,24 +29,25 @@ set(PROJECT_SOURCES
 		./QtApp/QtTablet.cpp
 		./QtApp/QtApp.cpp
 		./QtApp/SettingsDialog.cpp
-        ./QtApp/main.cpp
-        ./QtApp/QtApp.ui
+		./QtApp/main.cpp
+		./QtApp/QtApp.ui
+		./QtApp/Pattern_Command.h
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    qt_add_executable(QtApp
-        ${PROJECT_SOURCES}
-    )
+	qt_add_executable(QtApp
+		${PROJECT_SOURCES}
+	)
 else()
-    if(ANDROID)
-        add_library(QtApp SHARED
-            ${PROJECT_SOURCES}
-        )
-    else()
-        add_executable(QtApp
-            ${PROJECT_SOURCES}
-        )
-    endif()
+	if(ANDROID)
+		add_library(QtApp SHARED
+			${PROJECT_SOURCES}
+		)
+	else()
+		add_executable(QtApp
+			${PROJECT_SOURCES}
+		)
+	endif()
 endif()
 
 target_link_libraries(QtApp PRIVATE
@@ -63,6 +63,7 @@ target_include_directories(QtApp
 	PUBLIC G:/dev/Qt/6.0.0/msvc2019_64/include
 	PUBLIC G:/dev/gsl/include
 	PUBLIC ./QtApp
+	PUBLIC ./build/QtApp_autogen/include_Debug
 )
 
 target_compile_options(QtApp PUBLIC

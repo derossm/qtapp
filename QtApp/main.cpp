@@ -5,6 +5,8 @@
 #include "QtHeaders.h"
 #include "QtApp.h"
 
+#include "Pattern_Command.h"
+
 namespace UI
 {
 	enum class os
@@ -41,7 +43,6 @@ namespace UI
 #endif
 	}
 }
-
 
 //ENTRY:mainCRTStartup
 int main(int argc, char* argv[])
