@@ -2,10 +2,11 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/.vs/QtApp/v16
+/.vs
+/.vscode
 /QtApp/x64
-/x64/Debug
-/x64/Release
 /utest/x64
 /utest/build
 /utest/CMakeLists.txt
+/x64
+/build

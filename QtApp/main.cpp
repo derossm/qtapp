@@ -5,12 +5,6 @@
 #include "QtHeaders.h"
 #include "QtApp.h"
 
-#include "TypeErasure.h"
-#include "P_1442E.h"
-#include "P_1446E.h"
-
-import P_1327G;
-
 namespace UI
 {
 	enum class os
@@ -50,41 +44,33 @@ namespace UI
 
 
 //ENTRY:mainCRTStartup
-int main(int argc, char* argv[]) //, char** envp)
+int main(int argc, char* argv[])
 {
-	Problem_1446E obj1446e;
-	Problem_1442E<int,int> obj1442e;
-	ns::Problem_1327G obj1327g;
-
 	QApplication app(argc, argv);
 
-	QtApp widget;
-	QQmlApplicationEngine engine;
-
-	switch (UI::osName())
+	if constexpr (UI::osName() == UI::os::windows || UI::osName() == UI::os::linux || UI::osName() == UI::os::osx)
 	{
-	// mobile
-	case UI::os::android: [[fallthrough]];
-	case UI::os::ios:
-		engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
+		// desktop
+		QtApp widget;
+		widget.show();
 
+		return app.exec();
+	}
+	else if constexpr (UI::osName() == UI::os::android || UI::osName() == UI::os::ios)
+	{
+		// mobile
+		QQmlApplicationEngine engine;
+		engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
 		if (engine.rootObjects().isEmpty())
 		{
 			return EXIT_FAILURE;
 		}
 
-		break;
-	// desktop
-	[[likely]] case UI::os::windows: [[fallthrough]];
-	case UI::os::linux: [[fallthrough]];
-	case UI::os::osx:
-		widget.show();
-		break;
-	// other
-	[[unlikely]] case UI::os::unknown: [[fallthrough]];
-	[[unlikely]] default:
+		return app.exec();
+	}
+	else
+	{
+		// other
 		return EXIT_SUCCESS;
 	}
-
-	return app.exec();
 }
