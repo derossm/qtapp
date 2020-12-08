@@ -36,4 +36,6 @@
 
 #include <type_traits>
 
+#include <utility>
+
 #include <gsl/gsl>

@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Examples::Editor&lt;T&gt;" Collapsed="true">
+    <Position X="4" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAQAQAQAAAAAAAAAAQAAAwAAAAAAA=</HashCode>
+      <FileName>Pattern_Command.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Examples::TextEditor&lt;T&gt;" Collapsed="true">
+    <Position X="5.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAAAAAAAAAAAAACAAAAAAAAAAgAAQBAgA=</HashCode>
+      <FileName>Pattern_Command.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DP::Command&lt;T&gt;">
+    <Position X="1" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEAAAAAAAAAAEEAAAAAAAIAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Pattern_Command.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DP::WriteCommand&lt;T, U&gt;">
+    <Position X="0.5" Y="2.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAEAAEACBAAAAAAAEEAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>Pattern_Command.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="QtTablet" Collapsed="true">
+    <Position X="7.5" Y="0.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AESAEACACAAICgAABAGAAACgAAABICCQACIkCMgoAEA=</HashCode>
+      <FileName>QtTablet.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SettingsDialog" Collapsed="true">
+    <Position X="4" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACAAAAAAEAAAAAAAAAQAASAIACAAAAAAAAIAgA=</HashCode>
+      <FileName>SettingsDialog.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="QtApp" Collapsed="true">
+    <Position X="5.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BECOBAAMBAAAE6AgCsAAQAhodADgIEAgQAgoAgQABBI=</HashCode>
+      <FileName>QtApp.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="QWidget" Collapsed="true">
+    <Position X="10.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>hA6pAGgYqICSoYVAaL8yqpBimu1GwLWO4PBqCgXdwII=</HashCode>
+      <FileName>G:\dev\Qt\6.0.0\msvc2019_64\include\QtWidgets\qwidget.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

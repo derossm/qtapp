@@ -18,6 +18,8 @@ namespace Examples
 	{
 		T& data;
 
+		using type = T;
+
 		Editor() = delete;
 		Editor(const T&) = delete;
 		T& operator=(const T&) = delete;
@@ -27,14 +29,19 @@ namespace Examples
 		Editor(T&& d) : data(d) {}
 		~Editor() = default;
 
-		void setStr(std::string in)
+		template<typename U>
+		requires std::is_convertible_v<U, std::string>
+		void set(U&& in)
 		{
 			// some command to Qt like data->getWidget(0)->setText();
+			in = std::string{"implementSetTODO"};
 		}
 
-		std::string getStr()
+		template<typename U>
+		requires std::is_convertible_v<U, std::string>
+		U get()
 		{
-			return std::string{"getStr"};
+			return std::string{"implementGetTODO"};
 		}
 	};
 }
@@ -45,17 +52,25 @@ namespace DP
 	class Command
 	{
 	public:
+		virtual ~Command() = default;
+
 		virtual void execute(T&&) = 0;
 		virtual void undo() = 0;
 		virtual void redo() = 0;
 	};
 
-	template <typename T>
-	class WriteCommand : public Command<std::string>
+	template <typename T, typename U>
+	requires std::is_convertible_v<U, std::string>
+	class WriteCommand final : public Command<U>
 	{
+		// each command object holds a reference to the one editor object stored in the commander
+		// might be better to have it as a shared_ptr, so this command obj could be given to other commanders
+		// with a shared_ptr in the commander, passing another shared_ptr out with the command obj
+		// otherwise these reference addresses could become invalidated
+		// OR does the new commander want to change the editor anyway?
 		T& editor;
-		std::string oldStr{};
-		std::string newStr{};
+		U oldValue{};
+		U newValue{};
 
 		WriteCommand() = delete;
 		WriteCommand(const T&) = delete;
@@ -66,21 +81,21 @@ namespace DP
 		WriteCommand(T&& e) : editor(e) {}
 		~WriteCommand() = default;
 
-		void execute(std::string&& inputStr)
+		virtual void execute(U&& in) override
 		{
-			oldStr = editor->getStr();
-			std::swap(newStr, inputStr);
-			editor->setStr(newStr);
+			oldValue = editor->get<U>();
+			newValue = in;
+			editor->set<U>(std::forward<U>(in));
 		}
 
-		void undo()
+		virtual void undo() override
 		{
-			editor->setStr(oldStr);
+			editor->set<U>(U{oldValue});
 		}
 
-		void redo()
+		virtual void redo() override
 		{
-			editor->setStr(newStr);
+			editor->set<U>(U{newValue});
 		}
 	};
 }
@@ -88,9 +103,10 @@ namespace DP
 namespace Examples
 {
 	template<typename T>
+	requires std::is_same_v<T, Editor<typename T::type>>
 	class TextEditor
 	{
-		std::list<std::unique_ptr<DP::WriteCommand<T*>>> history;
+		std::list<std::unique_ptr<DP::WriteCommand<T*, std::string>>> history;
 		T editor;
 
 		TextEditor() = delete;
@@ -105,7 +121,7 @@ namespace Examples
 		void InputHandler(std::string&& inputStr)
 		{
 			// get a string being modified, save it, then modify it
-			auto& iter = history.emplace_back(std::make_unique<DP::WriteCommand<T*>>(&editor));
+			auto& iter = history.emplace_back(std::make_unique<DP::WriteCommand<T*, std::string>>(&editor));
 			iter->execute(std::forward<std::string>(inputStr));
 		}
 	};
