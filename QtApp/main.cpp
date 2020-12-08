@@ -55,6 +55,10 @@ int main(int argc, char* argv[])
 		QtApp widget;
 		widget.show();
 
+		Examples::Editor<QtApp> e(&widget);
+		Examples::TextEditor<Examples::Editor<QtApp>> ted(std::move(e));
+		ted.InputHandler(std::string{"Test000ZYX"});
+
 		return app.exec();
 	}
 	else if constexpr (UI::osName() == UI::os::android || UI::osName() == UI::os::ios)

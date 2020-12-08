@@ -184,6 +184,7 @@
     <QtUic Include="QtApp.ui" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Pattern_Command.h" />
     <ClInclude Include="P_1327G_v2.h" />
     <ClInclude Include="P_1442E.h" />
     <ClInclude Include="P_1446E.h" />
