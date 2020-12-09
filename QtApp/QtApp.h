@@ -24,7 +24,8 @@ private:
 	std::vector<std::unique_ptr<QAction>> recentFileActions;
 	QString currentFile;
 
-	[[nodiscard]]
+	//[[nodiscard]]
+	_NODISCARD
 	auto GetRecentFiles() const
 	{
 		QStringList files;
