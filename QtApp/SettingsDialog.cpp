@@ -2,6 +2,7 @@
 	This is horribly hacked together and needs completely redesigned. TODO
 \* ************************************************************************************************************************************************ */
 #include "stdafx.h"
+
 #include "SettingsDialog.h"
 
 void SettingsDialog::setupUi()

@@ -5,6 +5,7 @@
 
 #include "stdafx.h"
 #include "QtHeaders.h"
+
 #include "QtApp.h"
 
 class SettingsDialog : public QDialog

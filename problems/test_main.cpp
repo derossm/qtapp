@@ -2,13 +2,14 @@
 
 \* ************************************************************************************************************************************************ */
 #include "stdafx.h"
-#include "..\QtApp\QtHeaders.h"
-#include "..\QtApp\QtApp.h"
-#include "..\QtApp\QtTablet.h"
+#include "QtHeaders.h"
+
+#include "QtApp.h"
+#include "QtTablet.h"
 
 #define CATCH_CONFIG_RUNNER
 #pragma warning(push, 0)
-#include "catch.hpp"
+#include <catch2\catch.hpp>
 #pragma warning(pop)
 
 int main(int argc, char* argv[])

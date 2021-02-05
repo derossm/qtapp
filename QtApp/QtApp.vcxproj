@@ -29,6 +29,7 @@
     <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
     <EnableASAN>false</EnableASAN>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <Target Name="QtMsBuildNotFound" BeforeTargets="CustomBuild;ClCompile" Condition="!Exists('$(QtMsBuild)\qt.targets') or !Exists('$(QtMsBuild)\qt.props')">
@@ -48,8 +49,16 @@
   </ImportGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <EnableClangTidyCodeAnalysis>true</EnableClangTidyCodeAnalysis>
+    <OutDir>$(SolutionDir)out\$(ProjectName)\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)out\$(ProjectName)\$(Platform)\$(Configuration)\temp\</IntDir>
+    <IncludePath>$(SolutionDir)include;$(IncludePath)$(VC_IncludePath);G:\dev\Qt6\6.0.1\msvc2019_64\include;$(CUDA_PATH);$(CUDA_PATH)\include;$(WindowsSDK_IncludePath)</IncludePath>
+    <LibraryPath>G:\dev\vcpkg\installed\x64-windows\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutDir>$(SolutionDir)out\$(ProjectName)\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)out\$(ProjectName)\$(Platform)\$(Configuration)\temp\</IntDir>
+    <IncludePath>$(SolutionDir)include;$(IncludePath)$(VC_IncludePath);G:\dev\Qt6\6.0.1\msvc2019_64\include;$(CUDA_PATH);$(CUDA_PATH)\include;$(WindowsSDK_IncludePath)</IncludePath>
+    <LibraryPath>G:\dev\vcpkg\installed\x64-windows\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -61,10 +70,9 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <EnableModules>true</EnableModules>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalIncludeDirectories>$(IntDir);$(Qt_INCLUDEPATH_);G:\dev\gsl\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(IntDir);$(Qt_INCLUDEPATH_);G:\dev\vcpkg\installed\x64-windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <AssemblerOutput>All</AssemblerOutput>
+      <PrecompiledHeader>Create</PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <ScanSourceForModuleDependencies>
       </ScanSourceForModuleDependencies>
@@ -72,6 +80,8 @@
       <UseStandardPreprocessor>true</UseStandardPreprocessor>
       <ConformanceMode>true</ConformanceMode>
       <WholeProgramOptimization>false</WholeProgramOptimization>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN;NOMINMAX;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <QtMoc>
       <LanguageStandard>stdcpplatest</LanguageStandard>
@@ -88,26 +98,27 @@
     </QtMoc>
     <Link>
       <AdditionalLibraryDirectories>$(Qt_LIBPATH_);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>d3d12.lib;d3dcompiler.lib;dxgi.lib;fmt.lib;$(Qt_LIBS_);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalIncludeDirectories>$(IntDir);$(Qt_INCLUDEPATH_);G:\dev\gsl\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <EnableModules>true</EnableModules>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeader>Create</PrecompiledHeader>
       <UseStandardPreprocessor>true</UseStandardPreprocessor>
       <ConformanceMode>true</ConformanceMode>
       <ScanSourceForModuleDependencies>
       </ScanSourceForModuleDependencies>
       <UndefineAllPreprocessorDefinitions />
       <WarningLevel>Level4</WarningLevel>
-      <WholeProgramOptimization>false</WholeProgramOptimization>
-      <FunctionLevelLinking>
-      </FunctionLevelLinking>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN;NOMINMAX;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalOptions>/Zc:__cplusplus;%(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <QtMoc>
       <LanguageStandard>stdcpplatest</LanguageStandard>
@@ -123,20 +134,21 @@
       <ForceInclude>stdafx.h;QtApp.h;QtTablet.h</ForceInclude>
     </QtMoc>
     <Link>
-      <LinkTimeCodeGeneration>
-      </LinkTimeCodeGeneration>
-      <AdditionalLibraryDirectories>$(Qt_LIBPATH_);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>d3d12.lib;d3dcompiler.lib;dxgi.lib;fmt.lib;$(Qt_LIBS_);%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
     </Link>
   </ItemDefinitionGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="QtSettings">
     <QtInstall>msvc2019_64</QtInstall>
-    <QtModules>concurrent;core;gui;qml;widgets</QtModules>
+    <QtModules>concurrent;core;gui;qml;svg;widgets</QtModules>
     <QtBuildConfig>debug</QtBuildConfig>
     <QtQMLDebugEnable>false</QtQMLDebugEnable>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="QtSettings">
     <QtInstall>msvc2019_64</QtInstall>
-    <QtModules>concurrent;core;gui;qml;widgets</QtModules>
+    <QtModules>concurrent;core;gui;qml;svg;widgets</QtModules>
     <QtBuildConfig>release</QtBuildConfig>
     <QtQMLDebugEnable>false</QtQMLDebugEnable>
   </PropertyGroup>
@@ -146,7 +158,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
     <ClCompile>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
-      <MultiProcessorCompilation>false</MultiProcessorCompilation>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -158,15 +170,11 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="Configuration">
     <ClCompile>
-      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
-      <MultiProcessorCompilation>false</MultiProcessorCompilation>
-      <DebugInformationFormat>None</DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <Optimization>MaxSpeed</Optimization>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <GenerateDebugInformation>false</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -174,8 +182,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="P_1327G.cpp" />
-    <ClCompile Include="P_1327G.ixx" />
     <ClCompile Include="QtApp.cpp" />
     <ClCompile Include="QtTablet.cpp" />
     <ClCompile Include="SettingsDialog.cpp" />
@@ -185,20 +191,16 @@
     <QtUic Include="QtApp.ui" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Pattern_Command.h" />
-    <ClInclude Include="P_1327G_v2.h" />
-    <ClInclude Include="P_1442E.h" />
-    <ClInclude Include="P_1446E.h" />
     <QtMoc Include="QtTablet.h" />
-    <ClInclude Include="QtHeaders.h" />
-    <ClInclude Include="RayTracing.h" />
     <ClInclude Include="SettingsDialog.h" />
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="TypeErasure.h" />
+    <ClInclude Include="Tensor.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
     <None Include="cpp.hint" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="CMakeLists.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

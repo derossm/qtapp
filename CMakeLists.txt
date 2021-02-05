@@ -1,81 +1,118 @@
-cmake_minimum_required(VERSION 3.0.0)
-project(QtApp VERSION 0.1.0 LANGUAGES CXX)
+################################################################################
+#
+#
+#
+################################################################################
 
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-set(CMAKE_AUTOUIC ON)
-set(CMAKE_AUTOMOC ON)
-set(CMAKE_AUTORCC ON)
+cmake_minimum_required(VERSION 3.7.2)
+project("Untitled Game Engine" VERSION 0.0.1 LANGUAGES CXX)
+
+set(top_srcdir "${CMAKE_CURRENT_SOURCE_DIR}")
+set(top_builddir "${CMAKE_CURRENT_BINARY_DIR}")
+
+set(PACKAGE_NAME "${PROJECT_NAME}")
+string(REGEX REPLACE "${PROJECT_NAME}" "UGE" PACKAGE_SHORTNAME "${PACKAGE_NAME}")
+
+set(PACKAGE_TARNAME "${PACKAGE_SHORTNAME}")
+set(PACKAGE_VERSION "${PROJECT_VERSION}")
+set(PACKAGE_STRING "${PROJECT_NAME} v${PROJECT_VERSION}")
+set(PACKAGE_BUGREPORT "https://github.com/derossm/UGE")
+
+set(PACKAGE_COPYRIGHT "Copyright© 2021")
+set(PACKAGE_LICENSE "MIT License")
+
+string(CONCAT WINDOWS_RC_VERSION "${PROJECT_VERSION_MAJOR}, " "${PROJECT_VERSION_MINOR}, ${PROJECT_VERSION_PATCH}, 0")
+
+# sans-hyphen: used by bash-completion scripts.
+string(TOLOWER "${PACKAGE_SHORTNAME}" PROGRAM_SPREFIX)
+# hyphenated: used almost everywhere else.
+set(PROGRAM_PREFIX "${PROGRAM_SPREFIX}-")
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(CMAKE_PREFIX_PATH G:/dev/Qt/6.0.0/msvc2019_64)
+enable_language(CUDA)
 
-find_package(QT NAMES Qt6 COMPONENTS Concurrent Core Gui Qml Svg Widgets REQUIRED)
-find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Concurrent Core Gui Qml Svg Widgets REQUIRED)
+set(ARCHITECTURE "x64")
+set(PLATFORM "windows")
 
-set(PROJECT_SOURCES
-		./QtApp/stdafx.h
-		./QtApp/QtHeaders.h
-		#./QtApp/P_1327G.ixx cmake doesn't support C++20 modules yet
-		./QtApp/QtApp.h
-		./QtApp/SettingsDialog.h
-		./QtApp/QtTablet.h
-		./QtApp/P_1442E.h
-		./QtApp/P_1446E.h
-		./QtApp/stdafx.cpp
-		#./QtApp/P_1327G.cpp
-		./QtApp/QtTablet.cpp
-		./QtApp/QtApp.cpp
-		./QtApp/SettingsDialog.cpp
-		./QtApp/main.cpp
-		./QtApp/QtApp.ui
-		./QtApp/Pattern_Command.h
+set(VCPKG_DIR "G:/dev/vcpkg/installed")
+set(VCPKG_INCLUDE_DIR "${VCPKG_DIR}/${ARCHITECTURE}-${PLATFORM}/include")
+set(VCPKG_LIBRARY_DIR "${VCPKG_DIR}/${ARCHITECTURE}-${PLATFORM}/lib")
+
+set(CUDA_DIR "G:/dev/cuda/toolkit")
+set(CUDA_INCLUDE_DIR "${CUDA_DIR}/include")
+set(CUDA_LIBRARY_DIR "${CUDA_DIR}/lib")
+
+set(COMMON_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}" "${VCPKG_INCLUDE_DIR}" "${CUDA_INCLUDE_DIR}")
+set(COMMON_DEFINITIONS "WIN32_LEAN_AND_MEAN" "NOMINMAX" "UNICODE" "_UNICODE")
+set(WIN64_COMPILE_OPTIONS
+	"/Zc:__cplusplus" "/Zc:inline" "/Zc:wchar_t"
+	"/fp:precise" "/GS" "/Gd" "/Gm-" "/FC" "/EHsc" "/nologo" "/WX-" "/MDd" "/MP"
+	"/W4" "/Od"
+	"/arch:AVX2"
+	"/permissive-" "/Zc:preprocessor"
+	"/experimental:external" "/external:anglebrackets" "/external:W0"
+	#"/analyze" "/analyze:plugin EspXEngine.dll"
+	#"/analyze:ruleset ../rulesets/CppCoreCheckRules.ruleset"
+	#"/RunCodeAnalysis=true" "/CodeAnalysisRuleSet=CppCoreCheckRules.ruleset"
+	#"/fsanitize=address"
+	#"-Wno-microsoft-template-shadow"
+	#"/wd4514"
 )
 
-if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-	qt_add_executable(QtApp
-		${PROJECT_SOURCES}
-	)
-else()
-	if(ANDROID)
-		add_library(QtApp SHARED
-			${PROJECT_SOURCES}
-		)
-	else()
-		add_executable(QtApp
-			${PROJECT_SOURCES}
-		)
-	endif()
+#set_property(GLOBAL APPEND PROPERTY CXX_STANDARD 20)
+#set_property(GLOBAL APPEND PROPERTY LANGUAGE CXX)
+#set_property(GLOBAL APPEND PROPERTY LINKER_LANGUAGE CXX)
+
+# windows C++ wrappers
+find_package(WIL CONFIG REQUIRED)
+if(WIL_FOUND)
+	set(HAVE_WIL TRUE)
 endif()
 
-target_link_libraries(QtApp PRIVATE
-	Qt${QT_VERSION_MAJOR}::Concurrent
-	Qt${QT_VERSION_MAJOR}::Core
-	Qt${QT_VERSION_MAJOR}::Gui
-	Qt${QT_VERSION_MAJOR}::Qml
-	Qt${QT_VERSION_MAJOR}::Svg
-	Qt${QT_VERSION_MAJOR}::Widgets
-)
+# directxmath : DirectXMath SIMD C++ math library
+find_package(directxmath CONFIG REQUIRED)
+if(directxmath_FOUND)
+	set(HAVE_DIRECTXMATH TRUE)
+endif()
 
-target_include_directories(QtApp
-	PUBLIC G:/dev/Qt/6.0.0/msvc2019_64/include
-	PUBLIC G:/dev/gsl/include
-	PUBLIC ./QtApp
-	PUBLIC ./build/QtApp_autogen/include_Debug
-)
+# directxtk12 : A collection of helper classes for writing DirectX12
+find_package(directxtk12 CONFIG REQUIRED)
+if(directxtk12_FOUND)
+	set(HAVE_DIRECTXTK12 TRUE)
+endif()
 
-target_compile_options(QtApp PUBLIC
-	"/Zc:__cplusplus" "/experimental:module" "/permissive-" "/Zc:preprocessor"
-	"/Zc:wchar_t" "/W4" "/Zc:inline" "/Od" "/MDd" "/Zc:forScope" "/fp:precise"
-	"/arch:AVX2" "/EHsc" "/GS" "/Gd" "/Gm-" "/FC" "/nologo" "/WX-"
-)
+find_package(Microsoft.GSL CONFIG REQUIRED)
+if(Microsoft.GSL_FOUND)
+	set(HAVE_MS_GSL TRUE)
+endif()
 
-include(CTest)
-enable_testing()
+find_package(Catch2 CONFIG REQUIRED)
+if(Catch2_FOUND)
+	set(HAVE_CATCH2 TRUE)
+endif()
 
-set(CPACK_PROJECT_NAME ${PROJECT_NAME})
-set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
+find_package(fmt CONFIG REQUIRED)
+if(fmt_FOUND)
+	set(HAVE_FMT TRUE)
+endif()
 
-include(CPack)
+find_package(spdlog CONFIG REQUIRED)
+if(spdlog_FOUND)
+	set(HAVE_SPDLOG TRUE)
+endif()
+
+find_package(rapidjson CONFIG REQUIRED)
+if(rapidjson_FOUND)
+	set(HAVE_RAPIDJSON TRUE)
+endif()
+
+configure_file(cmake/config.h.cin config.h)
+configure_file(src/resource.rc.in src/resource.rc)
+
+foreach(SUBDIR include QtApp tests)
+	add_subdirectory("${SUBDIR}")
+endforeach()

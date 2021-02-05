@@ -9,7 +9,7 @@
 #pragma once
 
 #include "stdafx.h"
-#include "QtHeaders.h"
+//#include "QtHeaders.h"
 
 namespace Examples
 {

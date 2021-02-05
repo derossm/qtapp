@@ -5,16 +5,16 @@
 	otherwise errors prevent compilation -- can't use import std.* either, because Qt uses #include versions of same code and causes a lot of errors
 
 \* ************************************************************************************************************************************************ */
-module;
+//module;
 
 #include "stdafx.h"
 
-export module P_1327G;
+//export module P_1327G;
 
 namespace ns
 {
-export
-{
+//export
+//{
 	class Problem_1327G
 	{
 		size_t num;
@@ -45,5 +45,5 @@ export
 		[[nodiscard]]
 		bool patternMatchRegex() const noexcept;
 	};
-} // export
+//} // export
 } // namespace

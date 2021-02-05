@@ -44,14 +44,8 @@
     <ClCompile Include="SettingsDialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="P_1327G.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="P_1327G.ixx">
-      <Filter>Module Files</Filter>
     </ClCompile>
     <ClCompile Include="QtTablet.cpp">
       <Filter>Source Files</Filter>
@@ -66,33 +60,15 @@
     <ClInclude Include="SettingsDialog.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TypeErasure.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="stdafx.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="P_1327G_v2.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="P_1442E.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="P_1446E.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="RayTracing.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="QtHeaders.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Pattern_Command.h">
+    <ClInclude Include="Tensor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
     <None Include="ClassDiagram.cd" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="CMakeLists.txt" />
   </ItemGroup>
 </Project>
