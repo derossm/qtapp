@@ -1,8 +1,16 @@
-/* ************************************************************************************************************************************************ *\
-	This is the main Qt module.
+/**********************************************************************************************************************************************\
+	Copyright© 2020-2021 Mason DeRoss
 
-	Note: following Qt style for Qt interfacing code
-\* ************************************************************************************************************************************************ */
+	Released under the MIT license.
+
+	Copying and distribution of this file, with or without modification, are permitted in any medium without royalty,
+	provided the copyright notice and this notice are preserved. This file is offered as-is, without any warranty.
+
+	DESCRIPTION:
+		This is the main Qt module.
+
+		Note: following Qt style for Qt interfacing code
+\**********************************************************************************************************************************************/
 #pragma once
 
 #include "stdafx.h"
@@ -24,9 +32,9 @@ private:
 	std::vector<std::unique_ptr<QAction>> recentFileActions;
 	QString currentFile;
 
-	//[[nodiscard]]
-	_NODISCARD
-	auto GetRecentFiles() const
+	//_NODISCARD
+	[[nodiscard]]
+	auto GetRecentFiles() const noexcept
 	{
 		QStringList files;
 
@@ -37,19 +45,19 @@ private:
 		return files;
 	}
 
-	void ConnectRecent(QStringList& files);
-	void UpdateRecentFiles();
-	void OpenRecent();
+	void ConnectRecent(QStringList& files) noexcept;
+	void UpdateRecentFiles() noexcept;
+	void OpenRecent() noexcept;
 
-	void LoadFile(QFile& file);
-	void OpenFile(QString fileName);
+	void LoadFile(QFile& file) noexcept;
+	void OpenFile(QString fileName) noexcept;
 
-	void SaveDialog() {}
+	constexpr void SaveDialog() noexcept {}
 
-	void GenerateDefaultSettings();
+	void GenerateDefaultSettings() noexcept;
 
-	void LoadSettings();
-	void SaveSettings()
+	void LoadSettings() noexcept;
+	void SaveSettings() noexcept
 	{
 		if (settings->status() != QSettings::NoError) [[unlikely]]
 		{
@@ -68,9 +76,9 @@ private:
 		}
 	}
 
-	void BackupSettings();
+	void BackupSettings() noexcept;
 
-	void SetupStyle();
+	void SetupStyle() noexcept;
 
 	// do not copy
 	QtApp(const QtApp&) = delete;
@@ -81,57 +89,57 @@ private:
 	QtApp& operator=(QtApp&&) = delete;
 
 public:
-	QtApp(QWidget* parent = (QWidget*)nullptr);
+	QtApp(QWidget* parent = (QWidget*)nullptr) noexcept;
 
-	~QtApp();
+	~QtApp() noexcept;
 
 public slots:
 	// must be accessible by SettingsDialog to trigger updating the style TODO event handling
-	void UpdateStyle()
+	void UpdateStyle() noexcept
 	{
 		SetupStyle();
 	}
 
 private slots:
-	void on_actionNew_triggered() {}
-	void on_actionOpen_triggered()
+	constexpr void on_actionNew_triggered() noexcept {}
+	void on_actionOpen_triggered() noexcept
 	{
 		//OpenFile(std::move(QFileDialog::getOpenFileName(this, tr("Open File..."))));
 		OpenFile(QFileDialog::getOpenFileName(this, tr("Open File...")));
 	}
 
-	void on_actionSave_triggered() {}
-	void on_actionSave_As_triggered() {}
-	void on_actionSave_All_triggered() {}
+	constexpr void on_actionSave_triggered() noexcept {}
+	constexpr void on_actionSave_As_triggered() noexcept {}
+	constexpr void on_actionSave_All_triggered() noexcept {}
 
-	void on_actionReload_triggered() {}
-	void on_actionReload_All_triggered() {}
+	constexpr void on_actionReload_triggered() noexcept {}
+	constexpr void on_actionReload_All_triggered() noexcept {}
 
-	void on_actionUndo_triggered() {}
-	void on_actionRedo_triggered() {}
+	constexpr void on_actionUndo_triggered() noexcept {}
+	constexpr void on_actionRedo_triggered() noexcept {}
 
-	void on_actionCut_triggered() {}
-	void on_actionCopy_triggered() {}
-	void on_actionPaste_triggered() {}
-	void on_actionDelete_triggered() {}
-	void on_actionDuplicate_triggered() {}
+	constexpr void on_actionCut_triggered() noexcept {}
+	constexpr void on_actionCopy_triggered() noexcept {}
+	constexpr void on_actionPaste_triggered() noexcept {}
+	constexpr void on_actionDelete_triggered() noexcept {}
+	constexpr void on_actionDuplicate_triggered() noexcept {}
 
-	void on_actionSelect_All_triggered() {}
+	constexpr void on_actionSelect_All_triggered() noexcept {}
 
-	void on_actionFind_triggered() {}
-	void on_actionFind_Next_triggered() {}
-	void on_actionFind_Previous_triggered() {}
-	void on_actionFind_All_triggered() {}
+	constexpr void on_actionFind_triggered() noexcept {}
+	constexpr void on_actionFind_Next_triggered() noexcept {}
+	constexpr void on_actionFind_Previous_triggered() noexcept {}
+	constexpr void on_actionFind_All_triggered() noexcept {}
 
-	void on_actionReplace_triggered() {}
-	void on_actionReplace_Next_triggered() {}
-	void on_actionReplace_Previous_triggered() {}
-	void on_actionReplace_All_triggered() {}
+	constexpr void on_actionReplace_triggered() noexcept {}
+	constexpr void on_actionReplace_Next_triggered() noexcept {}
+	constexpr void on_actionReplace_Previous_triggered() noexcept {}
+	constexpr void on_actionReplace_All_triggered() noexcept {}
 
-	void on_actionSettings_triggered();
+	void on_actionSettings_triggered() noexcept;
 
 	// NOTE Qt uses int for index of widget, so don't use unsigned literals here Qt 6.0
-	void on_tabWidget_tabCloseRequested(int index)
+	void on_tabWidget_tabCloseRequested(int index) noexcept
 	{
 		// TODO check if Qt already handles memory of child pointers, for now delete everything we new'd
 		auto tab{ui->tabWidget->widget(index)};
@@ -146,7 +154,7 @@ private slots:
 		delete tab;
 	}
 
-	void on_actionExit_triggered()
+	void on_actionExit_triggered() noexcept
 	{
 		// TODO check if save on close is enabled
 		/*

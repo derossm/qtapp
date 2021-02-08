@@ -1,6 +1,14 @@
-/* ************************************************************************************************************************************************ *\
-	
-\* ************************************************************************************************************************************************ */
+/**********************************************************************************************************************************************\
+	Copyright© 2020-2021 Mason DeRoss
+
+	Released under the MIT license.
+
+	Copying and distribution of this file, with or without modification, are permitted in any medium without royalty,
+	provided the copyright notice and this notice are preserved. This file is offered as-is, without any warranty.
+
+	DESCRIPTION:
+
+\**********************************************************************************************************************************************/
 #pragma once
 
 #include "stdafx.h"
@@ -21,8 +29,8 @@ public:
 
 	~QtTablet() = default;
 
-	bool saveImage(const QString& file) noexcept;
-	bool loadImage(const QString& file) noexcept;
+	bool saveImage(std::string_view file) noexcept;
+	bool loadImage(std::string_view file) noexcept;
 	void clear() noexcept;
 
 	void setAlphaChannelValuator(Valuator type) noexcept
@@ -42,15 +50,18 @@ public:
 
 	void setColor(const QColor& c) noexcept
 	{
-		if (c.isValid()) m_color = c;
+		if (c.isValid())
+		{
+			m_color = c;
+		}
 	}
 
-	QColor color() const noexcept
+	constexpr QColor color() const noexcept
 	{
 		return m_color;
 	}
 
-	void setTabletDevice(QTabletEvent* event) noexcept
+	void setTabletDevice(const QTabletEvent* event) noexcept
 	{
 		updateCursor(event);
 	}
@@ -62,7 +73,7 @@ protected:
 
 private:
 	void initPixmap() noexcept;
-	void paintPixmap(QPainter& painter, QTabletEvent* event) noexcept;
+	void paintPixmap(const QPainter& painter, const QTabletEvent* event) noexcept;
 	Qt::BrushStyle brushPattern(qreal value) noexcept;
 	static qreal pressureToWidth(qreal pressure) noexcept;
 	void updateBrush(const QTabletEvent* event) noexcept;

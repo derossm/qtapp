@@ -1,7 +1,7 @@
 /**********************************************************************************************************************************************\
 	Copyright© 2020-2021 Mason DeRoss
 
-	Released under the GNU All-permissive License
+	Released under the MIT license.
 
 	Copying and distribution of this file, with or without modification, are permitted in any medium without royalty,
 	provided the copyright notice and this notice are preserved. This file is offered as-is, without any warranty.
@@ -21,7 +21,7 @@
 namespace uge::testing
 {
 
-TEMPLATE_TEST_CASE("Byte: wrapper for std::byte; non-assignment operators", "[Byte][template]", uint8_t, int8_t, uint16_t, int16_t, uint32_t, int32_t, uint64_t, int64_t )
+TEMPLATE_TEST_CASE("Byte: wrapper for std::byte; non-assignment operators", "[Byte][template]", uint8_t, int8_t, uint16_t, int16_t, uint32_t, int32_t, uint64_t, int64_t)
 {
 	Byte<TestType> b_u8type;
 
@@ -51,7 +51,7 @@ TEMPLATE_TEST_CASE("Byte: wrapper for std::byte; non-assignment operators", "[By
 	REQUIRE(k8 == static_cast<TestType>(~0));
 }
 
-TEMPLATE_TEST_CASE("Byte: wrapper for std::byte; assignment operators", "[Byte][template]", uint8_t, int8_t, uint16_t, int16_t, uint32_t, int32_t, uint64_t, int64_t )
+TEMPLATE_TEST_CASE("Byte: wrapper for std::byte; assignment operators", "[Byte][template]", uint8_t, int8_t, uint16_t, int16_t, uint32_t, int32_t, uint64_t, int64_t)
 {
 	Byte<TestType> b_u8type;
 

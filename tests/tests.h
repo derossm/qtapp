@@ -1,7 +1,7 @@
 /**********************************************************************************************************************************************\
-	Copyright© 2021 Mason DeRoss
+	Copyright© 2020-2021 Mason DeRoss
 
-	Released under either the GNU All-permissive License or MIT license. You pick.
+	Released under the MIT license.
 
 	Copying and distribution of this file, with or without modification, are permitted in any medium without royalty,
 	provided the copyright notice and this notice are preserved. This file is offered as-is, without any warranty.
@@ -10,4 +10,4 @@
 
 \**********************************************************************************************************************************************/
 #pragma once
-//#pragma system_header
+#pragma system_header

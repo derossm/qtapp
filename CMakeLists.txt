@@ -111,7 +111,7 @@ if(rapidjson_FOUND)
 endif()
 
 configure_file(cmake/config.h.cin config.h)
-configure_file(src/resource.rc.in src/resource.rc)
+#configure_file(src/resource.rc.in src/resource.rc)
 
 foreach(SUBDIR include QtApp tests)
 	add_subdirectory("${SUBDIR}")

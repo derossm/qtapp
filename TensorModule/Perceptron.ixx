@@ -1,7 +1,7 @@
 /**********************************************************************************************************************************************\
-	CopyrightÂ© 2020-2021 Mason DeRoss
+	Copyright© 2020-2021 Mason DeRoss
 
-	Released under the MIT License.
+	Released under the MIT license.
 
 	Copying and distribution of this file, with or without modification, are permitted in any medium without royalty,
 	provided the copyright notice and this notice are preserved. This file is offered as-is, without any warranty.
@@ -9,23 +9,27 @@
 	DESCRIPTION:
 
 \**********************************************************************************************************************************************/
-#pragma once
+module;
 
-#include "stdafx.h"
+export module Perceptron;
 
-namespace uge
+import std.core;
+import std.memory;
+import std.threading;
+import std.filesystem;
+
+template<typename InputType, typename Weight>
+struct Input
 {
+	InputType input;
+	Weight weight;
+};
 
-	class PMRVector
+template<typename AF, typename Bias, typename... Inputs>
+class Perceptron
+{
+	Perceptron(Inputs... in)
 	{
-		static constexpr size_t _PMR_BUFFER_SIZE{8192};
-		::std::array<::std::byte, _PMR_BUFFER_SIZE> stackBuf;
-		::std::pmr::monotonic_buffer_resource rsrc;
 
-		PMRVector() : rsrc(stackBuf.data(), sizeof stackBuf)
-		{
-
-		}
-	};
-
-}
+	}
+};

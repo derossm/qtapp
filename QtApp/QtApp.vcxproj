@@ -23,6 +23,7 @@
     <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
     <EnableASAN>false</EnableASAN>
+    <UseDebugLibraries>true</UseDebugLibraries>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -53,12 +54,15 @@
     <IntDir>$(SolutionDir)out\$(ProjectName)\$(Platform)\$(Configuration)\temp\</IntDir>
     <IncludePath>$(SolutionDir)include;$(IncludePath)$(VC_IncludePath);G:\dev\Qt6\6.0.1\msvc2019_64\include;$(CUDA_PATH);$(CUDA_PATH)\include;$(WindowsSDK_IncludePath)</IncludePath>
     <LibraryPath>G:\dev\vcpkg\installed\x64-windows\lib;$(LibraryPath)</LibraryPath>
+    <CodeAnalysisRuleSet>CppCoreCheckRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutDir>$(SolutionDir)out\$(ProjectName)\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)out\$(ProjectName)\$(Platform)\$(Configuration)\temp\</IntDir>
     <IncludePath>$(SolutionDir)include;$(IncludePath)$(VC_IncludePath);G:\dev\Qt6\6.0.1\msvc2019_64\include;$(CUDA_PATH);$(CUDA_PATH)\include;$(WindowsSDK_IncludePath)</IncludePath>
     <LibraryPath>G:\dev\vcpkg\installed\x64-windows\lib;$(LibraryPath)</LibraryPath>
+    <EnableClangTidyCodeAnalysis>true</EnableClangTidyCodeAnalysis>
+    <CodeAnalysisRuleSet>CppCoreCheckRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -118,7 +122,7 @@
       <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN;NOMINMAX;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalOptions>/Zc:__cplusplus;%(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <QtMoc>
       <LanguageStandard>stdcpplatest</LanguageStandard>
@@ -159,7 +163,6 @@
     <ClCompile>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
@@ -192,6 +195,7 @@
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="QtTablet.h" />
+    <ClInclude Include="QtHeaders.h" />
     <ClInclude Include="SettingsDialog.h" />
     <ClInclude Include="Tensor.h" />
   </ItemGroup>

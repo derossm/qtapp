@@ -1,11 +1,20 @@
-/* ************************************************************************************************************************************************ *\
+/**********************************************************************************************************************************************\
+	Copyright© 2020-2021 Mason DeRoss
+
+	Released under the MIT license.
+
+	Copying and distribution of this file, with or without modification, are permitted in any medium without royalty,
+	provided the copyright notice and this notice are preserved. This file is offered as-is, without any warranty.
+
+	DESCRIPTION:
+
 	This is horribly hacked together and needs completely redesigned. TODO
-\* ************************************************************************************************************************************************ */
+\**********************************************************************************************************************************************/
 #include "stdafx.h"
 
 #include "SettingsDialog.h"
 
-void SettingsDialog::setupUi()
+void SettingsDialog::setupUi() noexcept
 {
 	if (this->objectName().isEmpty())
 	{
@@ -29,12 +38,12 @@ void SettingsDialog::setupUi()
 	QMetaObject::connectSlotsByName(this);
 }
 
-void SettingsDialog::retranslateUi()
+void SettingsDialog::retranslateUi() noexcept
 {
 	this->setWindowTitle(QCoreApplication::translate("Settings", "Dialog"));
 }
 
-void SettingsDialog::setColor()
+void SettingsDialog::setColor() noexcept
 {
 	//QSettings settings(QSettings::IniFormat, QSettings::UserScope, QCoreApplication::organizationName(), QCoreApplication::applicationName());
 	settings = std::make_unique<QSettings>(QSettings::IniFormat, QSettings::UserScope, QCoreApplication::organizationName(), QCoreApplication::applicationName());
@@ -51,7 +60,7 @@ void SettingsDialog::setColor()
 	color = QColorDialog::getColor(settings->value("Style/Window", QColor(Qt::green)).value<QColor>(), this, "Select Color", QColorDialog::ShowAlphaChannel);
 }
 
-void SettingsDialog::setupColor()
+void SettingsDialog::setupColor() noexcept
 {
 	auto colorButton{new QPushButton(tr("Setup Color"))};
 
@@ -64,7 +73,7 @@ void SettingsDialog::setupColor()
 	QMetaObject::connectSlotsByName(this);
 }
 
-void SettingsDialog::accept()
+void SettingsDialog::accept() noexcept
 {
 	if (color.isValid())
 	{

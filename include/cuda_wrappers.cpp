@@ -1,7 +1,7 @@
 /**********************************************************************************************************************************************\
 	Copyright© 2020-2021 Mason DeRoss
 
-	Released under either the GNU All-permissive License or MIT license. You pick.
+	Released under the MIT License.
 
 	Copying and distribution of this file, with or without modification, are permitted in any medium without royalty,
 	provided the copyright notice and this notice are preserved. This file is offered as-is, without any warranty.
@@ -14,8 +14,8 @@
 
 #include <cuda_device_runtime_api.h>
 
-#include <driver_types.h>
-#include <crt/host_defines.h>
+//#include <driver_types.h>
+//#include <crt/host_defines.h>
 
 struct cudaFuncAttributes;
 
@@ -383,7 +383,7 @@ my::cudaRuntimeGetVersion()
 	cuddaError_t error = ::cudaRuntimeGetVersion(&runtimeVersion);
 	return ::std::pair(runtimeVersion, error);
 }
-/**/
+*/
 
 /**
  * \ingroup CUDART_EXECUTION
@@ -403,7 +403,7 @@ my::cudaRuntimeGetVersion()
  * \notefnerr
  *
  * \sa cudaLaunchDevice
-/**/
+*/
 //extern __device__ __cudart_builtin__ void* CUDARTAPI
 //cudaGetParameterBuffer(size_t alignment, size_t size);
 //my::cudaGetParameterBuffer(size_t alignment, size_t size)
@@ -436,7 +436,7 @@ my::cudaRuntimeGetVersion()
  * Guide for the detailed descriptions of launch configuration and parameter layout respectively.
  *
  * \sa cudaGetParameterBuffer
-/**/
+*/
 /*
 __device__ __cudart_builtin__ ::std::pair<void*, cudaError_t> CUDARTAPI
 //cudaGetParameterBufferV2(void* func, dim3 gridDimension, dim3 blockDimension, unsigned int sharedMemSize);
@@ -485,7 +485,7 @@ my::cudaLaunchDeviceV2_ptsz(cudaStream_t stream)
 	//extern __device__ __cudart_builtin__ cudaError_t CUDARTAPI
 	//cudaLaunchDeviceV2(void* parameterBuffer, cudaStream_t stream);
 #endif
-/**/
+*/
 
 //extern __device__ __cudart_builtin__ cudaError_t CUDARTAPI
 //cudaOccupancyMaxActiveBlocksPerMultiprocessor(int* numBlocks, const void* func, int blockSize, size_t dynamicSmemSize);

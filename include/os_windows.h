@@ -1,7 +1,7 @@
 /**********************************************************************************************************************************************\
 	Copyright© 2020-2021 Mason DeRoss
 
-	Released under the GNU All-permissive License
+	Released under the MIT License.
 
 	Copying and distribution of this file, with or without modification, are permitted in any medium without royalty,
 	provided the copyright notice and this notice are preserved. This file is offered as-is, without any warranty.
@@ -21,7 +21,6 @@
 	#endif
 
 #pragma warning(push, 0)
-
 	#include <windows.h>
 	#include <wrl.h>
 	#include <shellapi.h> // for ExtractIcon()
@@ -48,7 +47,6 @@
 #if defined(DEBUG) || defined(_DEBUG)
 	#include <crtdbg.h>
 #endif
-
 #pragma warning(pop)
 
 #endif // #ifdef _WIN32
