@@ -7,7 +7,7 @@
 	provided the copyright notice and this notice are preserved. This file is offered as-is, without any warranty.
 
 	DESCRIPTION:
-
+		free functions for enum comparison with integral types
 \**********************************************************************************************************************************************/
 #pragma once
 

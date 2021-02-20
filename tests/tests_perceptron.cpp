@@ -9,27 +9,29 @@
 	DESCRIPTION:
 
 \**********************************************************************************************************************************************/
-module;
+#include "stdafx.h"
 
-export module Perceptron;
+#include <catch2/catch.hpp>
 
-import std.core;
-import std.memory;
-import std.threading;
-import std.filesystem;
+#include "tests.h"
 
-template<typename InputType, typename Weight>
-struct Input
+#include "../TensorFlux/Perceptron.h"
+
+namespace uge::testing
 {
-	InputType input;
-	Weight weight;
-};
 
-template<typename AF, typename Bias, typename... Inputs>
-class Perceptron
-{
-	Perceptron(Inputs... in)
+	TEST_CASE("", "[]")
 	{
-
+		Input<int, int> in_a{1, 1};
+		const auto af{[](auto&& iter){ return iter; }};
+		Perceptron p1(af, 1, in_a);
+		Perceptron p2(af, 1, in_a, in_a);
+		Perceptron p3(af, 1, in_a, in_a, in_a);
+		Perceptron p0(af, 1, std::move(in_a));
+		spdlog::info("{}", p0.Output());
+		spdlog::info("{}", p1.Output());
+		spdlog::info("{}", p2.Output());
+		spdlog::info("{}", p3.Output());
 	}
-};
+
+} // end namespace uge::testing

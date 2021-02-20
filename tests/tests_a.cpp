@@ -52,12 +52,12 @@ TEST_CASE("DX12Widget", "[DX12]")
 	//cudaPtr->OnKeyDown(0);
 	//cudaPtr->OnKeyUp(0);
 
-	Random obj;
-	auto k = obj.roll<5>(1.0, -1.0);
-	for (auto& iter : k)
-	{
-		std::cout << iter << '\n';
-	}
+	//Random obj;
+	//auto k = obj.roll<5>(1.0, -1.0);
+	//for (auto& iter : k)
+	//{
+	//	std::cout << iter << '\n';
+	//}
 
 	//void ParseCommandLineArgs(std::span<WCHAR*> argv);
 

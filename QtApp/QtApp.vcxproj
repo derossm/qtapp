@@ -23,7 +23,6 @@
     <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
     <EnableASAN>false</EnableASAN>
-    <UseDebugLibraries>true</UseDebugLibraries>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -52,17 +51,19 @@
     <EnableClangTidyCodeAnalysis>true</EnableClangTidyCodeAnalysis>
     <OutDir>$(SolutionDir)out\$(ProjectName)\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)out\$(ProjectName)\$(Platform)\$(Configuration)\temp\</IntDir>
-    <IncludePath>$(SolutionDir)include;$(IncludePath)$(VC_IncludePath);G:\dev\Qt6\6.0.1\msvc2019_64\include;$(CUDA_PATH);$(CUDA_PATH)\include;$(WindowsSDK_IncludePath)</IncludePath>
+    <IncludePath>G:\dev\vcpkg\installed\x64-windows\include;$(SolutionDir)include;$(IncludePath)$(VC_IncludePath);G:\dev\Qt6\6.0.1\msvc2019_64\include;$(CUDA_PATH);$(CUDA_PATH)\include;$(WindowsSDK_IncludePath)</IncludePath>
     <LibraryPath>G:\dev\vcpkg\installed\x64-windows\lib;$(LibraryPath)</LibraryPath>
     <CodeAnalysisRuleSet>CppCoreCheckRules.ruleset</CodeAnalysisRuleSet>
+    <ExecutablePath>G:\dev\vcpkg\installed\x64-windows\bin;$(VC_ExecutablePath_x64);$(CommonExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutDir>$(SolutionDir)out\$(ProjectName)\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)out\$(ProjectName)\$(Platform)\$(Configuration)\temp\</IntDir>
-    <IncludePath>$(SolutionDir)include;$(IncludePath)$(VC_IncludePath);G:\dev\Qt6\6.0.1\msvc2019_64\include;$(CUDA_PATH);$(CUDA_PATH)\include;$(WindowsSDK_IncludePath)</IncludePath>
+    <IncludePath>G:\dev\vcpkg\installed\x64-windows\include;$(SolutionDir)include;$(IncludePath)$(VC_IncludePath);G:\dev\Qt6\6.0.1\msvc2019_64\include;$(CUDA_PATH);$(CUDA_PATH)\include;$(WindowsSDK_IncludePath)</IncludePath>
     <LibraryPath>G:\dev\vcpkg\installed\x64-windows\lib;$(LibraryPath)</LibraryPath>
     <EnableClangTidyCodeAnalysis>true</EnableClangTidyCodeAnalysis>
     <CodeAnalysisRuleSet>CppCoreCheckRules.ruleset</CodeAnalysisRuleSet>
+    <ExecutablePath>G:\dev\vcpkg\installed\x64-windows\bin;$(VC_ExecutablePath_x64);$(CommonExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -72,7 +73,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <EnableModules>true</EnableModules>
+      <EnableModules>false</EnableModules>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
       <AdditionalIncludeDirectories>$(IntDir);$(Qt_INCLUDEPATH_);G:\dev\vcpkg\installed\x64-windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
@@ -109,7 +110,7 @@
     <ClCompile>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <EnableModules>true</EnableModules>
+      <EnableModules>false</EnableModules>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <PrecompiledHeader>Create</PrecompiledHeader>
       <UseStandardPreprocessor>true</UseStandardPreprocessor>

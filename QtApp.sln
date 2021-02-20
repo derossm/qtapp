@@ -16,7 +16,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tests", "tests\tests.vcxpro
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "include", "include\include.vcxproj", "{4B2FF42D-35AC-4CAD-ABF9-0AB7DC2D5DD7}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TensorModule", "TensorModule\TensorModule.vcxproj", "{78CE3478-8DF3-487B-A24E-CE189C253178}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TensorFlux", "TensorFlux\TensorFlux.vcxproj", "{5BEE7B6E-9F6A-451D-B1A1-58A70B032D4F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,10 +36,10 @@ Global
 		{4B2FF42D-35AC-4CAD-ABF9-0AB7DC2D5DD7}.Debug|x64.Build.0 = Debug|x64
 		{4B2FF42D-35AC-4CAD-ABF9-0AB7DC2D5DD7}.Release|x64.ActiveCfg = Release|x64
 		{4B2FF42D-35AC-4CAD-ABF9-0AB7DC2D5DD7}.Release|x64.Build.0 = Release|x64
-		{78CE3478-8DF3-487B-A24E-CE189C253178}.Debug|x64.ActiveCfg = Debug|x64
-		{78CE3478-8DF3-487B-A24E-CE189C253178}.Debug|x64.Build.0 = Debug|x64
-		{78CE3478-8DF3-487B-A24E-CE189C253178}.Release|x64.ActiveCfg = Release|x64
-		{78CE3478-8DF3-487B-A24E-CE189C253178}.Release|x64.Build.0 = Release|x64
+		{5BEE7B6E-9F6A-451D-B1A1-58A70B032D4F}.Debug|x64.ActiveCfg = Debug|x64
+		{5BEE7B6E-9F6A-451D-B1A1-58A70B032D4F}.Debug|x64.Build.0 = Debug|x64
+		{5BEE7B6E-9F6A-451D-B1A1-58A70B032D4F}.Release|x64.ActiveCfg = Release|x64
+		{5BEE7B6E-9F6A-451D-B1A1-58A70B032D4F}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
