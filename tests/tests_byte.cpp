@@ -30,15 +30,15 @@ TEMPLATE_TEST_CASE("Byte: wrapper for std::byte; non-assignment operators", "[By
 	//int t[5];
 	//t[b_u8type] = 0;
 
-	Byte<TestType> k0 = b_u8type & i;
-	Byte<TestType> k1 = b_u8type | i;
-	Byte<TestType> k2 = b_u8type ^ i;
-	Byte<TestType> k3 = b_u8type + i;
-	Byte<TestType> k4 = b_u8type - i;
-	Byte<TestType> k5 = b_u8type * i;
-	Byte<TestType> k6 = b_u8type / i;
-	Byte<TestType> k7 = b_u8type % i;
-	Byte<TestType> k8 = ~b_u8type;
+	const Byte<TestType> k0 = b_u8type & i;
+	const Byte<TestType> k1 = b_u8type | i;
+	const Byte<TestType> k2 = b_u8type ^ i;
+	const Byte<TestType> k3 = b_u8type + i;
+	const Byte<TestType> k4 = b_u8type - i;
+	const Byte<TestType> k5 = b_u8type * i;
+	const Byte<TestType> k6 = b_u8type / i;
+	const Byte<TestType> k7 = b_u8type % i;
+	const Byte<TestType> k8 = ~b_u8type;
 
 	REQUIRE(k0 == static_cast<TestType>(0 & 0xFFFFFFFFFFFFFFFF));
 	REQUIRE(k1 == static_cast<TestType>(0 | 0xFFFFFFFFFFFFFFFF));

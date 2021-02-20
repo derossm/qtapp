@@ -1,5 +1,5 @@
 /**********************************************************************************************************************************************\
-	Copyright© 2020-2021 Mason DeRoss
+	CopyrightÂ© 2020-2021 Mason DeRoss
 
 	Released under the MIT license.
 
@@ -55,22 +55,11 @@ int main(int argc, char* argv[])
 {
 	QApplication app(argc, argv);
 
-	auto ptr = std::make_unique<char[]>(60);
-	std::cout << sizeof(ptr);
-
-	auto k0 = 1 << 0;
-	auto k1 = 1 << 1;
-	auto k2 = 1 << 2;
-
 	if constexpr (UI::osName() == UI::os::windows || UI::osName() == UI::os::linux || UI::osName() == UI::os::osx)
 	{
 		// desktop
 		QtApp widget;
 		widget.show();
-
-		//Examples::Editor<QtApp> e(&widget);
-		//Examples::TextEditor<Examples::Editor<QtApp>> ted(std::move(e));
-		//ted.InputHandler(std::string{"Test000ZYX"});
 
 		return app.exec();
 	}

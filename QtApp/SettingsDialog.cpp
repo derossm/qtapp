@@ -1,5 +1,5 @@
 /**********************************************************************************************************************************************\
-	Copyright© 2020-2021 Mason DeRoss
+	CopyrightÂ© 2020-2021 Mason DeRoss
 
 	Released under the MIT license.
 
@@ -7,8 +7,7 @@
 	provided the copyright notice and this notice are preserved. This file is offered as-is, without any warranty.
 
 	DESCRIPTION:
-
-	This is horribly hacked together and needs completely redesigned. TODO
+		This is horribly hacked together and needs completely redesigned. TODO
 \**********************************************************************************************************************************************/
 #include "stdafx.h"
 

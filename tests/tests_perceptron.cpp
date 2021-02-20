@@ -1,5 +1,5 @@
 /**********************************************************************************************************************************************\
-	Copyright© 2020-2021 Mason DeRoss
+	CopyrightÂ© 2020-2021 Mason DeRoss
 
 	Released under the MIT license.
 
@@ -15,12 +15,12 @@
 
 #include "tests.h"
 
-#include "../TensorFlux/Perceptron.h"
+#include "../TensorFlux/Perceptron.hpp"
 
 namespace uge::testing
 {
 
-	TEST_CASE("", "[]")
+	TEST_CASE("Perceptron construction", "[TensorFlux]")
 	{
 		Input<int, int> in_a{1, 1};
 		const auto af{[](auto&& iter){ return iter; }};

@@ -1,5 +1,5 @@
 ################################################################################
-# Copyright© 2020-2021 Mason DeRoss 
+# CopyrightÂ© 2020-2021 Mason DeRoss 
 # Released under the MIT license.
 #
 #

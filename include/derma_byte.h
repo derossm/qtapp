@@ -26,8 +26,8 @@ public:
 	//::std::array<::std::byte, N> byteArray;
 
 	using type = T;
-	Byte() : bits{0} {}
-	Byte(T bits) : bits{bits} {}
+	constexpr Byte() noexcept : bits{0} {}
+	constexpr Byte(T bits) noexcept : bits{bits} {}
 	//Byte(::std::byte byte) : bits{byte} {}
 
 	// add logging
